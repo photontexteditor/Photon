@@ -9,7 +9,7 @@ Some of the features of Photon Text Editor are:-
 3. Modern Graphical User Interface (GUI).
 
 # Programming Language: [Python](https://www.python.org)
-# License: MIT License
 # Used modules/libraries: [tkinter](https://docs.python.org/3/library/tk.html), [customtkinter](https://customtkinter.tomschimansky.com/), PyInstaller, py2exe, py2app, and cx_Freeze
+
 # More
 Photon aims to enhance productivity for programmers, writers, and professionals alike. Through the development of this text editor, the project tries to provide a comprehensive solution to the limitations faced by traditional text editors, fostering enhanced user experiences and efficient content management. Photon text editor holds the potential to impact the text editing landscape significantly and could greatly benefit from continuous user feedback and collaborative contributions.
