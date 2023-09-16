@@ -10,6 +10,6 @@ Some of the features of Photon Text Editor are:-
 2. Cross-platform availability.
 3. Modern Graphical User Interface (GUI).
 
-# Programming Language: [Python](www.python.org)
+# Programming Language: [Python](https://www.python.org)
 # License: MIT License
 # Used modules/libraries: [tkinter](https://docs.python.org/3/library/tk.html), [customtkinter](https://customtkinter.tomschimansky.com/), PyInstaller, py2exe, py2app, and cx_Freeze
