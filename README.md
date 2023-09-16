@@ -9,13 +9,13 @@ Some of the features of Photon Text Editor are:-
 3. Modern Graphical User Interface (GUI).
 
 # Programming Language: [Python](https://www.python.org)
-# Used modules/libraries:
+# Used modules/libraries
 1. [tkinter](https://docs.python.org/3/library/tk.html)
 2. [customtkinter](https://customtkinter.tomschimansky.com/)
 3. [Packaging in python:](https://packaging.python.org/en/latest/overview/) PyInstaller, py2exe, py2app, and cx_Freeze
 
 # More
-Photon aims to enhance productivity for programmers, writers, and professionals alike. Through the development of this text editor, the project tries to provide a comprehensive solution to the limitations faced by traditional text editors, fostering enhanced user experiences and efficient content management. Photon text editor holds the potential to impact the text editing landscape significantly and could greatly benefit from continuous user feedback and collaborative contributions.
+<p align="justify">Photon aims to enhance productivity for programmers, writers, and professionals alike. Through the development of this text editor, the project tries to provide a comprehensive solution to the limitations faced by traditional text editors, fostering enhanced user experiences and efficient content management. Photon text editor holds the potential to impact the text editing landscape significantly and could greatly benefit from continuous user feedback and collaborative contributions.</p>
 
 # Resources
 1. Python tutorial - https://docs.python.org/3/tutorial/index.html
