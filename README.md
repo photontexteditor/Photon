@@ -22,3 +22,6 @@ Some of the features of Photon Text Editor are:-
 1. Python tutorial - https://docs.python.org/3/tutorial/index.html
 2. tkinter tutorial - https://realpython.com/python-gui-tkinter
 3. customtkinter tutorial - https://customtkinter.tomschimansky.com/tutorial
+
+# Gantt Chart
+<img src="https://github.com/theranjitraut/Photon/blob/main/gantt.png">
