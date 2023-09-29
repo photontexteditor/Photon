@@ -24,4 +24,4 @@ Some of the features of Photon Text Editor are:-
 3. customtkinter tutorial - https://customtkinter.tomschimansky.com/tutorial
 
 # Gantt Chart
-<img src="https://github.com/theranjitraut/Photon/blob/main/gantt.png">
+<img src="https://github.com/theranjitraut/Photon/blob/main/ganttchart.png">
