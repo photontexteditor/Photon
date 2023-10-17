@@ -13,7 +13,9 @@ Some of the features of Photon Text Editor are:-
 # Used Modules/Libraries
 1. [tkinter](https://docs.python.org/3/library/tk.html)
 2. [customtkinter](https://customtkinter.tomschimansky.com/)
-3. [Packaging in python:](https://packaging.python.org/en/latest/overview/) PyInstaller, py2exe, py2app, and cx_Freeze
+3. [tkinter.ttk](https://docs.python.org/3/library/tkinter.ttk.html)
+4. [ttkbootstrap](https://ttkbootstrap.readthedocs.io/en/latest/)
+5. [Packaging in python:](https://packaging.python.org/en/latest/overview/) PyInstaller, py2exe, py2app, and cx_Freeze
 
 # More
 <p align="justify">Photon aims to enhance productivity for programmers, writers, and professionals alike. Through the development of this text editor, the project tries to provide a comprehensive solution to the limitations faced by traditional text editors, fostering enhanced user experiences and efficient content management. Photon text editor holds the potential to impact the text editing landscape significantly and could greatly benefit from continuous user feedback and collaborative contributions.</p>
