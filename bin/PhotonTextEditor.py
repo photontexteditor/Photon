@@ -1,309 +1,510 @@
-import tkinter as tk #importing tkinter 
-import customtkinter as ctk #import customtkinter and renaming it "ctK"
-from tkinter import ttk 
+import os
+import tkinter as tk
+from tkinter import *
+from tkinter import ttk
 from tkinter import font, colorchooser, filedialog, messagebox
+import customtkinter
 from PIL import Image
-import os 
 
 # appearance mode
-ctk.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
-ctk.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue"
+customtkinter.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark", "Light"
+customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue"
 
-# class/blueprint
-class Photon(ctk.CTk):
+# text editor class/blueprint
+class Photon(customtkinter.CTk):
     def __init__(self):
-        super().__init__() # using super method to inherit all the attributes of base class to derived class
+        super().__init__()
 
-        # geometry of editor
+        # text editor title and geometry
+        self.iconbitmap("icons/photon.ico")
         self.title("Photon Text Editor")
-        self.geometry(f"{1920}x{1080}")
-        self.iconbitmap('photon.ico')
+        self.minsize(600,600)
+        self.state("zoomed")
+        self.geometry("1920x1080")
 
-        # configure grid layout (4x4)
-        self.grid_columnconfigure(1, weight=1)
+        # row configure and column configure
         self.grid_rowconfigure((0, 1, 2), weight=1)
+        self.grid_columnconfigure(0, weight=1)
 
-        # create sidebar frame with widgets
-        self.sidebar_frame = ctk.CTkFrame(self, corner_radius=0)
-        self.sidebar_frame.grid(row=0, column=0, sticky="nsew") # rowspan=4
-        # self.sidebar_frame.grid_rowconfigure(4, weight=1)
+        # menu for cascading in top
+        self.main_menu = tk.Menu()
+
+        # file icons
+        new_icon = tk.PhotoImage(file='icons/new.png')
+        open_icon = tk.PhotoImage(file='icons/open.png')
+        save_icon = tk.PhotoImage(file='icons/save.png')
+        save_as_icon = tk.PhotoImage(file='icons/save_as.png')
+        exit_icon = tk.PhotoImage(file='icons/exit.png')
+
+        self.file = tk.Menu(self.main_menu, tearoff=False)
+
+        # edit icons 
+        copy_icon = tk.PhotoImage(file='icons/copy.png')
+        paste_icon = tk.PhotoImage(file='icons/paste.png')
+        cut_icon = tk.PhotoImage(file='icons/cut.png')
+        clear_all_icon = tk.PhotoImage(file='icons/clear_all.png')
+        find_icon = tk.PhotoImage(file='icons/find.png')
+
+        self.edit = tk.Menu(self.main_menu, tearoff=False)
+
+        # view icons 
+        tool_bar_icon = tk.PhotoImage(file='icons/tool_bar.png')
+        status_bar_icon = tk.PhotoImage(file='icons/status_bar.png')
+        self.view = tk.Menu(self.main_menu, tearoff=False)
+
+        # format icons
+        self.format = tk.Menu(self.main_menu, tearoff=False)
+
+        # help icons
+        self.help = tk.Menu(self.main_menu, tearoff=False)
+
+        # color theme 
+        light_default_icon = tk.PhotoImage(file='icons/light_default.png')
+        light_plus_icon = tk.PhotoImage(file='icons/light_plus.png')
+        dark_icon = tk.PhotoImage(file='icons/dark.png')
+        red_icon = tk.PhotoImage(file='icons/red.png')
+        monokai_icon = tk.PhotoImage(file='icons/monokai.png')
+        night_blue_icon = tk.PhotoImage(file='icons/night_blue.png')
+        self.color_theme = tk.Menu(self.main_menu, tearoff=False)
+
+        theme_choice = tk.StringVar()
+        color_icons = (light_default_icon, light_plus_icon, dark_icon, red_icon, monokai_icon, night_blue_icon)
+
+        color_dict = {
+            'Light Default ' : ('#000000', '#ffffff'),
+            'Light Plus' : ('#474747', '#e0e0e0'),
+            'Dark' : ('#c4c4c4', '#2d2d2d'),
+            'Red' : ('#2d2d2d', '#ffe8e8'),
+            'Monokai' : ('#d3b774', '#474747'),
+            'Night Blue' :('#ededed', '#6b9dc2')
+        }
+
+        # cascade menus
+        self.main_menu.add_cascade(label='File', menu=self.file)
+        self.main_menu.add_cascade(label='Edit', menu=self.edit)
+        self.main_menu.add_cascade(label='View', menu=self.view)
+        self.main_menu.add_cascade(label='Window', menu=self.color_theme)
+        self.main_menu.add_cascade(label='Format', menu=self.format)
+        self.main_menu.add_cascade(label='Help', menu=self.help)
+
+        # top-frame
+        self.top_frame = customtkinter.CTkFrame(self, corner_radius=0)
+        self.top_frame.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
 
         # logo
-        self.logo_label1 = ctk.CTkLabel(self.sidebar_frame, text="Photon Text Editor", font=ctk.CTkFont(size=15, weight="bold"))
-        self.logo_label1.grid(row=0, column=0, padx=20, pady=(20, 10))
-        # self.logo_label2 = ctk.CTkLabel(self.sidebar_frame, text="Text Editor", font=ctk.CTkFont(size=15, weight="bold"))
-        # self.logo_label2.grid(row=1, column=0, padx=20, pady=(20, 10))
-    
-        # font
+        self.logo = customtkinter.CTkLabel(self.top_frame, image=customtkinter.CTkImage(light_image=Image.open("icons/photon.png"), size=(60, 60)), text="", font=customtkinter.CTkFont(size=15, weight="bold"))
+        self.logo.grid(row=0, column=0, padx=(20,0), pady=20)
+
+        # logo text
+        self.logo_text = customtkinter.CTkLabel(self.top_frame, text="PHOTON", font=customtkinter.CTkFont(size=15, weight="bold"))
+        self.logo_text.grid(row=0, column=1, padx=(0, 20), pady=20)
+
+        # font-family-box
         self.font_tuple = tk.font.families()
-        self.font_family = ctk.StringVar()
-        self.font_box = ctk.CTkComboBox(self.sidebar_frame, values=self.font_tuple, variable=self.font_family, state="readonly", width=215)
-        self.font_box.set('Arial')
-        self.font_box.grid(row=0, column=1, padx=20, pady=(10, 10))
-        
-        # size box 
-        self.size_tuple = ['2', '4', '6', '8', '10', '12', '14', '16', '18', '20', '22', '24', '28', '30', '34', '38', '40', '44', '48']
-        self.size_var = tk.IntVar()
-        self.font_size = ctk.CTkComboBox(self.sidebar_frame, values=self.size_tuple, variable=self.size_var, state="readonly", width=85)
-        self.font_size.set('4')
-        self.font_size.grid(row=0, column=2, padx=20, pady=(10, 10))
+        self.font_family = tk.StringVar()
+        self.font_family_box = customtkinter.CTkComboBox(self.top_frame, width=215, state="readonly", variable=self.font_family, values=self.font_tuple,font=customtkinter.CTkFont(weight="bold"))
+        self.font_family_box.set('Times New Roman')
+        self.font_family_box.grid(row=0, column=2, padx=(20,0), pady=20)
 
-        # # bold button 
-        # self.bold_icon = ctk.CTkImage(light_image=Image.open('icons/bold.png'), size=(40,40))
-        self.bold_btn = ctk.CTkButton(self.sidebar_frame, text="Bold", font=ctk.CTkFont(size=15, weight="bold"))
-        self.bold_btn.grid(row=0, column=3, padx=2, pady=2)
+        # font-size-box
+        self.size_var = tk.StringVar()
+        self.font_size_box = customtkinter.CTkComboBox(self.top_frame, width=85, variable=self.size_var, values=['5', '6', '7', '8', '9', '10', '11', '12', '14', '16', '18', '20', '22', '24', '26', '28', '36', '48', '72'], state="readonly",font=customtkinter.CTkFont(weight="bold"))
+        self.font_size_box.set('12')
+        self.font_size_box.grid(row=0, column=3, padx=10, pady=20)
 
+        # font-color-button
+        self.font_color_btn = customtkinter.CTkButton(self.top_frame, image=customtkinter.CTkImage(light_image=Image.open("icons/color.png"), dark_image=Image.open("icons/color_light.png"), size=(30, 30)), text="", width=20)
+        self.font_color_btn.grid(row=0, column=4, padx=(0, 10), pady=20)
 
-        # # italic button 
-        # self.italic_icon = ctk.CTkImage(light_image=Image.open('icons/italic.png'), size=(10,10))
-        self.italic_btn = ctk.CTkButton(self.sidebar_frame, text="Italic", font=ctk.CTkFont(size=15, weight="bold"))
-        self.italic_btn.grid(row=0, column=4, padx=2, pady=2)
+        # bold button
+        self.bold_btn = customtkinter.CTkButton(self.top_frame, image=customtkinter.CTkImage(light_image=Image.open("icons/bold.png"), dark_image=Image.open("icons/bold_light.png"), size=(30, 30)), text="", width=20)
+        self.bold_btn.grid(row=0, column=5, padx=(20, 2), pady=5)
 
-        # # underline button 
-        # self.underline_icon = ctk.CTkImage(light_image=Image.open('icons/underline.png'), size=(10,10))
-        self.underline_btn = ctk.CTkButton(self.sidebar_frame, text="Underline", font=ctk.CTkFont(size=15, weight="bold"))
-        self.underline_btn.grid(row = 0, column=5, padx=2, pady=2)
+        # italic button
+        self.italic_btn = customtkinter.CTkButton(self.top_frame, image=customtkinter.CTkImage(light_image=Image.open("icons/italic.png"), dark_image=Image.open("icons/italic_light.png"), size=(30, 30)), text="", width=20)
+        self.italic_btn.grid(row=0, column=6, padx=0, pady=5)
 
-        # # font color button 
-        # self.font_color_icon = ctk.CTkImage(light_image=Image.open('icons/font_color.png'), size=(10,10))
-        # self.font_color_btn = ctk.CTkButton(self.sidebar_frame, image=self.font_color_icon)
-        # self.font_color_btn.grid(row=1, column=2, padx=5)
+        # underline button
+        self.underline_btn = customtkinter.CTkButton(self.top_frame, image=customtkinter.CTkImage(light_image=Image.open("icons/underline.png"), dark_image=Image.open("icons/underline_light.png"), size=(30, 30)), text="", width=20)
+        self.underline_btn.grid(row=0, column=7, padx=(2, 2), pady=10)
 
-        # # align left 
-        # self.align_left_icon = ctk.CTkImage(light_image=Image.open('icons/align_left.png'), size=(10,10))
-        self.align_left_btn = ctk.CTkButton(self.sidebar_frame, text="Left")
-        self.align_left_btn.grid(row=1, column=3, padx=2, pady=2)
-
-        # # align center 
-        # self.align_center_icon = ctk.CTkImage(light_image=Image.open('icons/align_center.png'), size=(10,10))
-        self.align_center_btn = ctk.CTkButton(self.sidebar_frame, text="Center")
-        self.align_center_btn.grid(row=1, column=4, padx=2, pady=2)
-
-        # # align right 
-        # self.align_right_icon = ctk.CTkImage(light_image=Image.open('icons/align_right.png'), size=(10,10))
-        self.align_right_btn = ctk.CTkButton(self.sidebar_frame, text="Right")
-        self.align_right_btn.grid(row=1, column=5, padx=2, pady=2)
-
-        # # End toolbar
+        # overstrike button
+        self.overstrike_btn = customtkinter.CTkButton(self.top_frame, image=customtkinter.CTkImage(light_image=Image.open("icons/overstrike.png"), dark_image=Image.open("icons/overstrike_light.png"), size=(30, 30)), text="", width=20)
+        self.overstrike_btn.grid(row=0, column=8, padx=(0, 10), pady=10)
 
 
-        # create tabview
-        # self.tabview = ctk.CTkTabview(self.sidebar_frame, width=50)
-        # self.tabview.grid(row=1, column=0, padx=(20, 0), pady=(20, 10))
-        # self.tabview.add("CTkTabview")
-        # self.tabview.add("Tab 2")
-        # self.tabview.add("Tab 3")
-        # self.tabview.tab("CTkTabview").grid_columnconfigure(0, weight=1)  # configure grid of individual tabs
-        # self.tabview.tab("Tab 2").grid_columnconfigure(0, weight=1)
+        # left align button
+        self.left_align = customtkinter.CTkButton(self.top_frame, image=customtkinter.CTkImage(light_image=Image.open("icons/left_align.png"), dark_image=Image.open("icons/left_align_light.png"), size=(30, 30)), text="", width=20)
+        self.left_align.grid(row=0, column=9, padx=(10, 2), pady=10)
 
-        # self.optionmenu_1 = ctk.CTkOptionMenu(self.tabview.tab("CTkTabview"), dynamic_resizing=False, values=["Value 1", "Value 2", "Value Long Long Long"])
-        # self.optionmenu_1.grid(row=0, column=0, padx=20, pady=(20, 10))
-        # self.combobox_1 = ctk.CTkComboBox(self.tabview.tab("CTkTabview"),
-        #                                             values=["Value 1", "Value 2", "Value Long....."])
-        # self.combobox_1.grid(row=1, column=0, padx=20, pady=(10, 10))
-       
-        # self.string_input_button = ctk.CTkButton(self.tabview.tab("CTkTabview"), text="Open CTkInputDialog",command=self.open_input_dialog_event)
-        # self.string_input_button.grid(row=2, column=0, padx=20, pady=(10, 10))
-        # self.label_tab_2 = ctk.CTkLabel(self.tabview.tab("Tab 2"), text="CTkLabel on Tab 2")
-        # self.label_tab_2.grid(row=0, column=0, padx=20, pady=10)
+        # center align button
+        self.center_align = customtkinter.CTkButton(self.top_frame, image=customtkinter.CTkImage(light_image=Image.open("icons/center_align.png"), dark_image=Image.open("icons/center_align_light.png"), size=(30, 30)), text="", width=20)
+        self.center_align.grid(row=0, column=10, padx=0, pady=10)
 
-        # button
-        # self.sidebar_button_2 = ctk.CTkButton(self.sidebar_frame, command=self.sidebar_button_event, text="Edit")
-        # self.sidebar_button_2.grid(row=0, column=3, padx=20, pady=10)
-        # self.sidebar_button_3 = ctk.CTkButton(self.sidebar_frame, command=self.sidebar_button_event, text="More")
-        # self.sidebar_button_3.grid(row=0, column=4, padx=20, pady=10)
+        # right align button
+        self.right_align = customtkinter.CTkButton(self.top_frame, image=customtkinter.CTkImage(light_image=Image.open("icons/right_align.png"), dark_image=Image.open("icons/right_align_light.png"), size=(30, 30)), text="", width=20)
+        self.right_align.grid(row=0, column=11, padx=(2, 10), pady=10)
 
-        # appearance mode``
-        self.appearance_mode_label = ctk.CTkLabel(self.sidebar_frame, text="Appearance Mode:", anchor="w")
-        self.appearance_mode_label.grid(row=0, column=10, padx=20, pady=(10, 0))
-        self.appearance_mode_optionemenu = ctk.CTkOptionMenu(self.sidebar_frame, values=["Light", "Dark", "System"],command=self.change_appearance_mode_event, width=100)
-        self.appearance_mode_optionemenu.grid(row=1, column=10, padx=20, pady=(10, 10))
-        
+        # search box
+        self.search_box = customtkinter.CTkEntry(self.top_frame, placeholder_text="Search", font=customtkinter.CTkFont(weight="bold"))
+        self.search_box.grid(row=0, column=12, padx=(20, 0), pady=20)
+
+        # go button     
+        self.go = customtkinter.CTkButton(self.top_frame, text="Go", width=10, font=customtkinter.CTkFont(weight="bold"))
+        self.go.grid(row=0, column=13, padx=10, pady=10)
+
         # scaling label
-        self.scaling_label = ctk.CTkLabel(self.sidebar_frame, text="UI Scaling:", anchor="w")
-        self.scaling_label.grid(row=0, column=11, padx=20, pady=(10, 0))
-        self.scaling_optionemenu = ctk.CTkOptionMenu(self.sidebar_frame, values=["80%", "90%", "100%", "110%", "120%"],command=self.change_scaling_event, width=90)
-        self.scaling_optionemenu.grid(row=1, column=11, padx=20, pady=(10, 10))
+        self.scaling_optionemenu = customtkinter.CTkOptionMenu(self.top_frame, values=["80%", "85%", "90%", "95%", "100%", "105%", "110%"],command=self.change_scaling_event, width=90, font=customtkinter.CTkFont(weight="bold"))
+        self.scaling_optionemenu.set('Scaling')
+        self.scaling_optionemenu.grid(row=0, column=14, padx=(10,20), pady=10, sticky="w")
 
-
-
-        # # create tabview
-        # self.tabview = ctk.CTkTabview(self, width=100)
-        # self.tabview.grid(row=0, column=2, padx=(20, 0), pady=(20, 0), sticky="nsew")
-        # self.tabview.add("Font")
-        # self.tabview.add("Align")
-        # self.tabview.add("Color")
-        # self.tabview.tab("Font").grid_columnconfigure(0, weight=1)  
+        # appearance mode
+        self.appearance_mode_optionemenu = customtkinter.CTkOptionMenu(self.top_frame, values=["Light", "Dark"],command=self.change_appearance_mode_event, width=60, font=customtkinter.CTkFont(weight="bold"))
+        self.appearance_mode_optionemenu.set("Theme")
+        self.appearance_mode_optionemenu.grid(row=0, column=15, padx=(0,20), pady=10, sticky="w")
         
-        # # configure grid of individual tabs
-        # self.tabview.tab("Align").grid_columnconfigure(0, weight=1)
+        # text-box
+        self.text_box = customtkinter.CTkTextbox(self, height=650)
+        self.text_box.grid(row=2, column=0, padx=10, sticky="nsew")
+        self.text_box.focus()
 
-        # self.optionmenu_1 = ctk.CTkOptionMenu(self.tabview.tab("Font"), dynamic_resizing=False, values=["Family", "size", "color"])
-        # self.optionmenu_1.grid(row=0, column=0, padx=20, pady=(20, 10))
-        # self.combobox_1 = ctk.CTkComboBox(self.tabview.tab("Font"),values=["Size", "Value 2", "Value Long....."])
-        # self.combobox_1.grid(row=1, column=0, padx=20, pady=(10, 10))
-       
-        # self.string_input_button = ctk.CTkButton(self.tabview.tab("Font"), text="Color",command=self.open_input_dialog_event)
-        # self.string_input_button.grid(row=2, column=0, padx=20, pady=(10, 10))
-        # self.label_tab_2 = ctk.CTkLabel(self.tabview.tab("Align"), text="Left, Middle, Right")
-        # self.label_tab_2.grid(row=0, column=0, padx=20, pady=20)
+        # character label
+        self.status_bar = customtkinter.CTkLabel(self, text=f'Characters: {0}  Words: {0}', font=customtkinter.CTkFont(weight="bold"))
+        self.status_bar.grid(row=3, column=0, sticky="nsew")
 
-        # create textbox
-        self.textbox = ctk.CTkTextbox(self, width=1420, height=650)
-        self.textbox.grid(row=4, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
+        # word_label = customtkinter.CTkLabel(bot_frame, text="Word:")
+        # word_label.grid(row=0, column=1, sticky="nsew")
 
-        # color theme
-        # theme_choice = ctk.StringVar()
-        # color_icons = (light_default_icon, light_plus_icon, dark_icon, red_icon, monokai_icon, night_blue_icon)
-
-        # color_dict = {
-        #     'Light Default ' : ('#000000', '#ffffff'),
-        #     'Light Plus' : ('#474747', '#e0e0e0'),
-        #     'Dark' : ('#c4c4c4', '#2d2d2d'),
-        #     'Red' : ('#2d2d2d', '#ffe8e8'),
-        #     'Monokai' : ('#d3b774', '#474747'),
-        #     'Night Blue' :('#ededed', '#6b9dc2')
-        # }
-
-        # font family and font size functionality 
-        current_font_family = self.font_family.get()
-        current_font_size = self.size_var.get()
+        # font family and font size function 
+        current_font_family = 'Times New Roman'
+        current_font_size = 12
 
         def change_font(event=None):
             global current_font_family
             current_font_family = self.font_family.get()
-            self.textbox.configure(font=(ctk.CTkFont(family=current_font_family)))
+            self.text_box.configure(font=customtkinter.CTkFont(family=current_font_family, size=current_font_size))
 
         def change_fontsize(event=None):
             global current_font_size
-            current_font_size = self.size_var.get()
-            self.textbox.configure(font=(ctk.CTkFont(size=current_font_size)))
-        
-        self.font_box.configure(command=change_font)
-        self.font_size.configure(command=change_fontsize)
-        
+            current_font_size = int(self.size_var.get())
+            self.text_box.configure(font=customtkinter.CTkFont(family=current_font_family, size=current_font_size))
 
-        # bold button functionality
+        self.font_family_box.configure(command=change_font)
+        self.font_size_box.configure(command=change_fontsize)
+        # self.font_family_box.bind("<<ComboboxSelected>>", change_font)
+        # self.font_size_box.bind("<<ComboboxSelected>>", change_fontsize)
+
+        # bold button function
         def change_bold():
-            text_property = tk.font.Font(font=self.textbox['font'])
+            text_property = tk.font.Font(font=self.text_box.cget("font"))
             if text_property.actual()['weight'] == 'normal':
-                self.textbox.configure(font=ctk.CTkFont(family=current_font_family, size=current_font_size, weight='bold'))
+                self.text_box.configure(font=customtkinter.CTkFont(current_font_family, current_font_size, 'bold'))
             if text_property.actual()['weight'] == 'bold':
-                self.textbox.configure(font=ctk.CTkFont(family=current_font_family, size=current_font_size, weight='normal'))
+                self.text_box.configure(font=customtkinter.CTkFont(current_font_family, current_font_size, 'normal'))
             
         self.bold_btn.configure(command=change_bold)
 
-        # italic functionality
+        # italic function
         def change_italic():
-            text_property = tk.font.Font(font=self.textbox['font'])
+            text_property = tk.font.Font(font=self.text_box.cget("font"))
             if text_property.actual()['slant'] == 'roman':
-                self.textbox.configure(font=(current_font_family, current_font_size, 'italic'))
+                self.text_box.configure(font=customtkinter.CTkFont(current_font_family, current_font_size, 'italic'))
             if text_property.actual()['slant'] == 'italic':
-                self.textbox.configure(font=(current_font_family, current_font_size, 'normal'))
+                self.text_box.configure(font=customtkinter.CTkFont(current_font_family, current_font_size, 'normal'))
             
         self.italic_btn.configure(command=change_italic)
 
-        # underline functionality 
+        # underline function 
         def change_underline():
-            text_property = tk.font.Font(font=self.textbox['font'])
+            text_property = tk.font.Font(font=self.text_box.cget("font"))
             if text_property.actual()['underline'] == 0:
-                self.textbox.configure(font=(current_font_family, current_font_size, 'underline'))
+                self.text_box.configure(font=(current_font_family, current_font_size, 'underline'))
             if text_property.actual()['underline'] == 1:
-                self.textbox.configure(font=(current_font_family, current_font_size, 'normal'))
+                self.text_box.configure(font=(current_font_family, current_font_size, 'normal'))
             
         self.underline_btn.configure(command=change_underline)
 
-        # create radiobutton frame
-        # self.radiobutton_frame = ctk.CTkFrame(self)
-        # self.radiobutton_frame.grid(row=0, column=3, padx=(20, 20), pady=(20, 0), sticky="nsew")
-        # self.radio_var = tkinter.IntVar(value=0)
-        # self.label_radio_group = ctk.CTkLabel(master=self.radiobutton_frame, text="CTkRadioButton Group:")
-        # self.label_radio_group.grid(row=0, column=2, columnspan=1, padx=10, pady=10, sticky="")
-        # self.radio_button_1 = ctk.CTkRadioButton(master=self.radiobutton_frame, variable=self.radio_var, value=0)
-        # self.radio_button_1.grid(row=1, column=2, pady=10, padx=20, sticky="n")
-        # self.radio_button_2 = ctk.CTkRadioButton(master=self.radiobutton_frame, variable=self.radio_var, value=1)
-        # self.radio_button_2.grid(row=2, column=2, pady=10, padx=20, sticky="n")
-        # self.radio_button_3 = ctk.CTkRadioButton(master=self.radiobutton_frame, variable=self.radio_var, value=2)
-        # self.radio_button_3.grid(row=3, column=2, pady=10, padx=20, sticky="n")
+        # overstrike function 
+        def change_overstrike():
+            text_property = tk.font.Font(font=self.text_box.cget("font"))
+            if text_property.actual()['overstrike'] == 0:
+                self.text_box.configure(font=(current_font_family, current_font_size, 'overstrike'))
+            if text_property.actual()['overstrike'] == 1:
+                self.text_box.configure(font=(current_font_family, current_font_size, 'normal'))
+            
+        self.overstrike_btn.configure(command=change_overstrike)
 
-        # create main entry and button
-        # self.entry = ctk.CTkEntry(self, placeholder_text="Search")
-        # self.entry.grid(row=3, column=1, columnspan=2, padx=(20, 0), pady=(20, 20), sticky="nsew")
+        # font color function 
+        def change_font_color():
+            color_var = tk.colorchooser.askcolor()
+            self.text_box.configure(text_color=color_var[1])
 
-        # self.main_button_1 = ctk.CTkButton(master=self, fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"))
-        # self.main_button_1.grid(row=3, column=3, padx=(20, 20), pady=(20, 20), sticky="nsew")
+        self.font_color_btn.configure(command=change_font_color)
 
-        # # create slider and progressbar frame
-        # self.slider_progressbar_frame = ctk.CTkFrame(self, fg_color="transparent")
-        # self.slider_progressbar_frame.grid(row=1, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
-        # self.slider_progressbar_frame.grid_columnconfigure(0, weight=1)
-        # self.slider_progressbar_frame.grid_rowconfigure(4, weight=1)
-        # self.seg_button_1 = ctk.CTkSegmentedButton(self.slider_progressbar_frame)
-        # self.seg_button_1.grid(row=0, column=0, padx=(20, 10), pady=(10, 10), sticky="ew")
-        # self.progressbar_1 = ctk.CTkProgressBar(self.slider_progressbar_frame)
-        # self.progressbar_1.grid(row=1, column=0, padx=(20, 10), pady=(10, 10), sticky="ew")
-        # self.progressbar_2 = ctk.CTkProgressBar(self.slider_progressbar_frame)
-        # self.progressbar_2.grid(row=2, column=0, padx=(20, 10), pady=(10, 10), sticky="ew")
-        # self.slider_1 = ctk.CTkSlider(self.slider_progressbar_frame, from_=0, to=1, number_of_steps=4)
-        # self.slider_1.grid(row=3, column=0, padx=(20, 10), pady=(10, 10), sticky="ew")
-        # self.slider_2 = ctk.CTkSlider(self.slider_progressbar_frame, orientation="vertical")
-        # self.slider_2.grid(row=0, column=1, rowspan=5, padx=(10, 10), pady=(10, 10), sticky="ns")
-        # self.progressbar_3 = ctk.CTkProgressBar(self.slider_progressbar_frame, orientation="vertical")
-        # self.progressbar_3.grid(row=0, column=2, rowspan=5, padx=(10, 20), pady=(10, 10), sticky="ns")
+        # left align function 
+        def align_left():
+            text_content = self.text_box.get(1.0, 'end')
+            self.text_box.tag_config('left', justify=tk.LEFT)
+            self.text_box.delete(1.0, tk.END)
+            self.text_box.insert(tk.INSERT, text_content, 'left')
 
-        # create scrollable frame
-        # self.scrollable_frame = ctk.CTkScrollableFrame(self, label_text="CTkScrollableFrame")
-        # self.scrollable_frame.grid(row=1, column=2, padx=(20, 0), pady=(20, 0), sticky="nsew")
-        # self.scrollable_frame.grid_columnconfigure(0, weight=1)
-        # self.scrollable_frame_switches = []
-        # for i in range(100):
-        #     switch = ctk.CTkSwitch(master=self.scrollable_frame, text=f"CTkSwitch {i}")
-        #     switch.grid(row=i, column=0, padx=10, pady=(0, 20))
-        #     self.scrollable_frame_switches.append(switch)
+        self.left_align.configure(command=align_left)
 
-        # create checkbox and switch frame
-        # self.checkbox_slider_frame = ctk.CTkFrame(self)
-        # self.checkbox_slider_frame.grid(row=1, column=3, padx=(20, 20), pady=(20, 0), sticky="nsew")
-        # self.checkbox_1 = ctk.CTkCheckBox(master=self.checkbox_slider_frame)
-        # self.checkbox_1.grid(row=1, column=0, pady=(20, 0), padx=20, sticky="n")
-        # self.checkbox_2 = ctk.CTkCheckBox(master=self.checkbox_slider_frame)
-        # self.checkbox_2.grid(row=2, column=0, pady=(20, 0), padx=20, sticky="n")
-        # self.checkbox_3 = ctk.CTkCheckBox(master=self.checkbox_slider_frame)
-        # self.checkbox_3.grid(row=3, column=0, pady=20, padx=20, sticky="n")
+        # center align function
+        def align_center():
+            text_content = self.text_box.get(1.0, 'end')
+            self.text_box.tag_config('center', justify=tk.CENTER)
+            self.text_box.delete(1.0, tk.END)
+            self.text_box.insert(tk.INSERT, text_content, 'center')
 
-        # # set default values
-        # self.sidebar_button_3.configure(state="disabled", text="Save")
-        # self.checkbox_3.configure(state="disabled")
-        # self.checkbox_1.select()
-        # self.scrollable_frame_switches[0].select()
-        # self.scrollable_frame_switches[4].select()
-        # self.radio_button_3.configure(state="disabled")
-        self.appearance_mode_optionemenu.set("System")
-        # self.scaling_optionemenu.set("100%")
-        # self.optionmenu_1.set("CTkOptionmenu")
-        # self.combobox_1.set("CTkComboBox")
-        # self.slider_1.configure(command=self.progressbar_2.set)
-        # self.slider_2.configure(command=self.progressbar_3.set)
-        # self.progressbar_1.configure(mode="indeterminnate")
-        # self.progressbar_1.start()
-        # self.textbox.insert("0.0", "CTkTextbox\n\n" + "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\n\n" * 20)
-        # self.seg_button_1.configure(values=["CTkSegmentedButton", "Value 2", "Value 3"])
-        # self.seg_button_1.set("Value 2")
+        self.center_align.configure(command=align_center)
+
+        # right align function
+        def align_right():
+            text_content = self.text_box.get(1.0, 'end')
+            self.text_box.tag_config('right', justify=tk.RIGHT)
+            self.text_box.delete(1.0, tk.END)
+            self.text_box.insert(tk.INSERT, text_content, 'right')
+
+        self.right_align.configure(command=align_right)
+
+        self.text_box.configure(font=customtkinter.CTkFont('Times New Roman', 12))
+
+        # status bar
+        text_changed = False 
+        def changed(event=None):
+            global text_changed
+            if self.text_box.edit_modified():
+                text_changed = True 
+                words = len(self.text_box.get(1.0, 'end-1c').split())
+                characters = len(self.text_box.get(1.0, 'end-1c'))
+                self.status_bar.configure(text=f'Characters: {characters}  Words: {words}')
+            self.text_box.edit_modified(False)
+
+        self.text_box.bind('<<Modified>>', changed)
+        # self.text_box.configure(command=changed)
+
+        # main menu function begins
+        # variable 
+        url = ''
+
+        # new file function
+        def new_file(event=None):
+            global url 
+            url = ''
+            self.text_box.delete(1.0, tk.END)
+
+        # file commands for new
+        self.file.add_command(label='New', image=new_icon, compound=tk.LEFT, accelerator='Ctrl+N', command=new_file)
+
+        # open file function
+        def open_file(event=None):
+            global url 
+            url = filedialog.askopenfilename(initialdir=os.getcwd(), title='Select File', filetypes=(('Text File', '*.txt'), ('All files', '*.*')))
+            try:
+                with open(url, 'r') as fr:
+                    self.text_box.delete(1.0, tk.END)
+                    self.text_box.insert(1.0, fr.read())
+            except FileNotFoundError:
+                return 
+            except:
+                return 
+            app.title(os.path.basename(url))
+
+        self.file.add_command(label='Open', image=open_icon, compound=tk.LEFT, accelerator='Ctrl+O', command=open_file)
+
+        # save file function
+        def save_file(event=None):
+            global url 
+            try:
+                if url:
+                    content = str(self.text_box.get(1.0, tk.END))
+                    with open(url, 'w', encoding='utf-8') as fw:
+                        fw.write(content)
+                else:
+                    url = filedialog.asksaveasfile(mode = 'w', defaultextension='.txt', filetypes=(('Text File', '*.txt'), ('All files', '*.*')))
+                    content2 = self.text_box.get(1.0, tk.END)
+                    url.write(content2)
+                    url.close()
+            except:
+                return 
+
+        self.file.add_command(label='Save', image=save_icon, compound=tk.LEFT, accelerator='Ctrl+S', command = save_file)
+
+
+        # save as function 
+        def save_as(event=None):
+            global url 
+            try:
+                content = self.text_box.get(1.0, tk.END)
+                url = filedialog.asksaveasfile(mode = 'w', defaultextension='.txt', filetypes=(('Text File', '*.txt'), ('Python Script', '*.py'), ('C++ Script', '*.cpp'), ('C# Script', '*.cs'), ('Java Script', '*.java'), ('R Script', '*.r'), ('All files', '*.*')))
+                url.write(content)
+                url.close()
+            except:
+                return 
+
+
+        self.file.add_command(label='Save As', image=new_icon, compound=tk.LEFT, accelerator='Ctrl+Alt+S', command=save_as)
+
+        # exit program function 
+        def exit_func(event=None):
+            global url, text_changed
+            try:
+                if text_changed:
+                    mbox = messagebox.askyesnocancel('Warning', 'Do you want to save the file ?')
+                    if mbox is True:
+                        if url:
+                            content = self.text_box.get(1.0, tk.END)
+                            with open(url, 'w', encoding='utf-8') as fw:
+                                fw.write(content)
+                                self.destroy()
+                        else:
+                            content2 = str(self.text_box.get(1.0, tk.END))
+                            url = filedialog.asksaveasfile(mode = 'w', defaultextension='.txt', filetypes=(('Text File', '*.txt'), ('All files', '*.*')))
+                            url.write(content2)
+                            url.close()
+                            self.destroy()
+                    elif mbox is False:
+                        self.destroy()
+                else:
+                    self.destroy()
+            except:
+                return 
+        self.file.add_command(label='Close', image=exit_icon, compound=tk.LEFT, accelerator='Ctrl+Q', command=exit_func)
+
+        # find and replace function
+        def find_func(event=None):
+
+            def find():
+                word = find_input.get()
+                self.text_box.tag_remove('match', '1.0', tk.END)
+                matches = 0
+                if word:
+                    start_pos = '1.0'
+                    while True:
+                        start_pos = self.text_box.search(word, start_pos, stopindex=tk.END)
+                        if not start_pos:
+                            break 
+                        end_pos = f'{start_pos}+{len(word)}c'
+                        self.text_box.tag_add('match', start_pos, end_pos)
+                        matches += 1
+                        start_pos = end_pos
+                        self.text_box.tag_config('match', text_color='red', fg_color='yellow')
+            
+            def replace():
+                word = find_input.get()
+                replace_text = replace_input.get()
+                content = self.text_box.get(1.0, tk.END)
+                new_content = content.replace(word, replace_text)
+                self.text_box.delete(1.0, tk.END)
+                self.text_box.insert(1.0, new_content)
+
+            find_dialogue = tk.Toplevel()
+            find_dialogue.geometry('450x250+500+200')
+            find_dialogue.title('Find')
+            find_dialogue.resizable(0,0)
+
+            # frame 
+            find_frame = ttk.LabelFrame(find_dialogue, text='Find/Replace')
+            find_frame.pack(pady=20)
+
+            # labels
+            text_find_label = ttk.Label(find_frame, text='Find : ')
+            text_replace_label = ttk.Label(find_frame, text= 'Replace')
+
+            # entry 
+            find_input = ttk.Entry(find_frame, width=30)
+            replace_input = ttk.Entry(find_frame, width=30)
+
+            # find button 
+            find_button = ttk.Button(find_frame, text='Find', command=find)
+            replace_button = ttk.Button(find_frame, text= 'Replace', command=replace)
+
+            # label grid 
+            text_find_label.grid(row=0, column=0, padx=4, pady=4)
+            text_replace_label.grid(row=1, column=0, padx=4, pady=4)
+
+            # entry grid 
+            find_input.grid(row=0, column=1, padx=4, pady=4)
+            replace_input.grid(row=1, column=1, padx=4, pady=4)
+
+            # button grid 
+            find_button.grid(row=2, column=0, padx=8, pady=4)
+            replace_button.grid(row=2, column=1, padx=8, pady=4)
+
+            find_dialogue.mainloop()
+
+        # edit commands 
+        self.edit.add_command(label='Copy', image=copy_icon, compound=tk.LEFT, accelerator='Ctrl+C', command=lambda : self.text_box.event_generate("<Control c>"))
+        self.edit.add_command(label='Paste', image=paste_icon, compound=tk.LEFT, accelerator='Ctrl+V', command=lambda : self.text_box.event_generate("<Control v>"))
+        self.edit.add_command(label='Cut', image=cut_icon, compound=tk.LEFT, accelerator='Ctrl+X', command=lambda : self.text_box.event_generate("<Control x>"))
+        self.edit.add_command(label='Clear All', image=clear_all_icon, compound=tk.LEFT, accelerator='Ctrl+Alt+X', command= lambda : self.text_box.delete(1.0, tk.END))
+        self.edit.add_command(label='Find', image=find_icon, compound=tk.LEFT, accelerator='Ctrl+F', command = find_func)
+
+        # view check button 
+        show_statusbar = tk.BooleanVar()
+        show_statusbar.set(True)
+        show_top_frame = tk.BooleanVar()
+        show_top_frame.set(True)
+        def hide_top_frame():
+            global show_top_frame
+            if show_top_frame:
+                self.top_frame.pack_forget()
+                show_top_frame = False 
+            else :
+                self.text_box.pack_forget()
+                self.status_bar.pack_forget()
+                self.top_frame.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
+                self.text_box.pack(fill=tk.BOTH, expand=True)
+                self.status_bar.pack(side=tk.BOTTOM)
+                show_top_frame = True 
+
+        def hide_statusbar():
+            global show_statusbar
+            if show_statusbar:
+                self.status_bar.pack_forget()
+                show_statusbar = False 
+            else :
+                self.status_bar.grid(row=3, column=0, sticky="nsew")
+                show_statusbar = True 
+
+
+        self.view.add_checkbutton(label='Tool Bar',onvalue=True, offvalue=0,variable = show_top_frame, image=tool_bar_icon, compound=tk.LEFT, command=hide_top_frame)
+        self.view.add_checkbutton(label='Status Bar',onvalue=1, offvalue=False,variable = show_statusbar, image=status_bar_icon, compound=tk.LEFT, command=hide_statusbar)
+
+        # color theme 
+        def change_theme():
+            chosen_theme = theme_choice.get()
+            color_tuple = color_dict.get(chosen_theme)
+            fg_colour, bg_color = color_tuple[0], color_tuple[1]
+            self.text_box.configure(fg_color=bg_color, text_color=fg_colour) 
+        count = 0 
+        for i in color_dict:
+            self.color_theme.add_radiobutton(label = i, image=color_icons[count], variable=theme_choice, compound=tk.LEFT, command=change_theme)
+            count += 1 
+
+        # main menu function ends
+
+        self.config(menu=self.main_menu)
+
+        # bind shortcut keys 
+        self.bind("<Control-n>", new_file)
+        self.bind("<Control-o>", open_file)
+        self.bind("<Control-s>", save_file)
+        self.bind("<Control-Alt-s>", save_as)
+        self.bind("<Control-q>", exit_func)
+        self.bind("<Control-f>", find_func)
 
     def open_input_dialog_event(self):
-        dialog = ctk.CTkInputDialog(text="Type in a number:", title="CTkInputDialog")
+        dialog = customtkinter.CTkInputDialog(text="Type in a number:", title="CTkInputDialog")
         print("CTkInputDialog:", dialog.get_input())
 
     def change_appearance_mode_event(self, new_appearance_mode: str):
-        ctk.set_appearance_mode(new_appearance_mode)
+        customtkinter.set_appearance_mode(new_appearance_mode)
 
     def change_scaling_event(self, new_scaling: str):
         new_scaling_float = int(new_scaling.replace("%", "")) / 100
-        ctk.set_widget_scaling(new_scaling_float)
-
-    def sidebar_button_event(self):
-        print("sidebar_button click")
-
+        customtkinter.set_widget_scaling(new_scaling_float)
 
 if __name__ == "__main__":
     app = Photon()
