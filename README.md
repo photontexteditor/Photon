@@ -22,9 +22,13 @@ Some of the features of Photon Text Editor are:-
 # More
 <p align="justify">Photon aims to enhance productivity for programmers, writers, and professionals alike. Through the development of this text editor, the project tries to provide a comprehensive solution to the limitations faced by traditional text editors, fostering enhanced user experiences and efficient content management. Photon text editor holds the potential to impact the text editing landscape significantly and could greatly benefit from continuous user feedback and collaborative contributions.</p>
 
-<img src="https://github.com/theranjitraut/Photon/blob/main/img/photontexteditor.png">
-<img src="https://github.com/theranjitraut/Photon/blob/main/img/alphaphoton.png">
-<img src="https://github.com/theranjitraut/Photon/blob/main/img/betaphoton.png">
+
+<img src="https://github.com/theranjitraut/Photon/blob/main/img/photonv120.png">
+<img src="https://github.com/theranjitraut/Photon/blob/main/img/photonv110.png">
+<img src="https://github.com/theranjitraut/Photon/blob/main/img/photonv102.png">
+<img src="https://github.com/theranjitraut/Photon/blob/main/img/photonv101.png">
+<img src="https://github.com/theranjitraut/Photon/blob/main/img/photonv100.png">
+<img src="https://github.com/theranjitraut/Photon/blob/main/img/photonv000.png">
 
 # Resources
 1. Python tutorial - https://docs.python.org/3/tutorial/index.html
