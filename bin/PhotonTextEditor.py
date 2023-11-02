@@ -38,7 +38,7 @@ class Photon(customtkinter.CTk):
 
         self.file = tk.Menu(self.main_menu, tearoff=False)
 
-        # edit icons 
+        # # edit icons 
         copy_icon = tk.PhotoImage(file='icons/copy.png')
         paste_icon = tk.PhotoImage(file='icons/paste.png')
         cut_icon = tk.PhotoImage(file='icons/cut.png')
@@ -47,9 +47,10 @@ class Photon(customtkinter.CTk):
 
         self.edit = tk.Menu(self.main_menu, tearoff=False)
 
-        # view icons 
+        # # view icons 
         tool_bar_icon = tk.PhotoImage(file='icons/tool_bar.png')
         status_bar_icon = tk.PhotoImage(file='icons/status_bar.png')
+        
         self.view = tk.Menu(self.main_menu, tearoff=False)
 
         # format icons
@@ -65,7 +66,8 @@ class Photon(customtkinter.CTk):
         red_icon = tk.PhotoImage(file='icons/red.png')
         monokai_icon = tk.PhotoImage(file='icons/monokai.png')
         night_blue_icon = tk.PhotoImage(file='icons/night_blue.png')
-        self.color_theme = tk.Menu(self.main_menu, tearoff=False)
+
+        self.window = tk.Menu(self.main_menu, tearoff=False)
 
         theme_choice = tk.StringVar()
         color_icons = (light_default_icon, light_plus_icon, dark_icon, red_icon, monokai_icon, night_blue_icon)
@@ -83,7 +85,7 @@ class Photon(customtkinter.CTk):
         self.main_menu.add_cascade(label='File', menu=self.file)
         self.main_menu.add_cascade(label='Edit', menu=self.edit)
         self.main_menu.add_cascade(label='View', menu=self.view)
-        self.main_menu.add_cascade(label='Window', menu=self.color_theme)
+        self.main_menu.add_cascade(label='Window', menu=self.window)
         self.main_menu.add_cascade(label='Format', menu=self.format)
         self.main_menu.add_cascade(label='Help', menu=self.help)
 
@@ -113,45 +115,48 @@ class Photon(customtkinter.CTk):
         self.font_size_box.grid(row=0, column=3, padx=10, pady=20)
 
         # font-color-button
-        self.font_color_btn = customtkinter.CTkButton(self.top_frame, image=customtkinter.CTkImage(light_image=Image.open("icons/color.png"), dark_image=Image.open("icons/color_light.png"), size=(30, 30)), text="", width=20)
+        self.font_color_btn = customtkinter.CTkButton(self.top_frame, image=customtkinter.CTkImage(light_image=Image.open("icons/color.png"), dark_image=Image.open("icons/color_light.png"), size=(18, 18)), text="", width=20)
         self.font_color_btn.grid(row=0, column=4, padx=(0, 10), pady=20)
 
         # bold button
-        self.bold_btn = customtkinter.CTkButton(self.top_frame, image=customtkinter.CTkImage(light_image=Image.open("icons/bold.png"), dark_image=Image.open("icons/bold_light.png"), size=(30, 30)), text="", width=20)
+        self.bold_btn = customtkinter.CTkButton(self.top_frame, image=customtkinter.CTkImage(light_image=Image.open("icons/bold.png"), dark_image=Image.open("icons/bold_light.png"), size=(18, 18)), text="", width=20)
         self.bold_btn.grid(row=0, column=5, padx=(20, 2), pady=5)
 
         # italic button
-        self.italic_btn = customtkinter.CTkButton(self.top_frame, image=customtkinter.CTkImage(light_image=Image.open("icons/italic.png"), dark_image=Image.open("icons/italic_light.png"), size=(30, 30)), text="", width=20)
+        self.italic_btn = customtkinter.CTkButton(self.top_frame, image=customtkinter.CTkImage(light_image=Image.open("icons/italic.png"), dark_image=Image.open("icons/italic_light.png"), size=(18, 18)), text="", width=20)
         self.italic_btn.grid(row=0, column=6, padx=0, pady=5)
 
         # underline button
-        self.underline_btn = customtkinter.CTkButton(self.top_frame, image=customtkinter.CTkImage(light_image=Image.open("icons/underline.png"), dark_image=Image.open("icons/underline_light.png"), size=(30, 30)), text="", width=20)
+        self.underline_btn = customtkinter.CTkButton(self.top_frame, image=customtkinter.CTkImage(light_image=Image.open("icons/underline.png"), dark_image=Image.open("icons/underline_light.png"), size=(18, 18)), text="", width=20)
         self.underline_btn.grid(row=0, column=7, padx=(2, 2), pady=10)
 
         # overstrike button
-        self.overstrike_btn = customtkinter.CTkButton(self.top_frame, image=customtkinter.CTkImage(light_image=Image.open("icons/overstrike.png"), dark_image=Image.open("icons/overstrike_light.png"), size=(30, 30)), text="", width=20)
+        self.overstrike_btn = customtkinter.CTkButton(self.top_frame, image=customtkinter.CTkImage(light_image=Image.open("icons/overstrike.png"), dark_image=Image.open("icons/overstrike_light.png"), size=(18, 18)), text="", width=20)
         self.overstrike_btn.grid(row=0, column=8, padx=(0, 10), pady=10)
 
 
         # left align button
-        self.left_align = customtkinter.CTkButton(self.top_frame, image=customtkinter.CTkImage(light_image=Image.open("icons/left_align.png"), dark_image=Image.open("icons/left_align_light.png"), size=(30, 30)), text="", width=20)
+        self.left_align = customtkinter.CTkButton(self.top_frame, image=customtkinter.CTkImage(light_image=Image.open("icons/left_align.png"), dark_image=Image.open("icons/left_align_light.png"), size=(18, 18)), text="", width=20)
         self.left_align.grid(row=0, column=9, padx=(10, 2), pady=10)
 
         # center align button
-        self.center_align = customtkinter.CTkButton(self.top_frame, image=customtkinter.CTkImage(light_image=Image.open("icons/center_align.png"), dark_image=Image.open("icons/center_align_light.png"), size=(30, 30)), text="", width=20)
+        self.center_align = customtkinter.CTkButton(self.top_frame, image=customtkinter.CTkImage(light_image=Image.open("icons/center_align.png"), dark_image=Image.open("icons/center_align_light.png"), size=(18, 18)), text="", width=20)
         self.center_align.grid(row=0, column=10, padx=0, pady=10)
 
         # right align button
-        self.right_align = customtkinter.CTkButton(self.top_frame, image=customtkinter.CTkImage(light_image=Image.open("icons/right_align.png"), dark_image=Image.open("icons/right_align_light.png"), size=(30, 30)), text="", width=20)
+        self.right_align = customtkinter.CTkButton(self.top_frame, image=customtkinter.CTkImage(light_image=Image.open("icons/right_align.png"), dark_image=Image.open("icons/right_align_light.png"), size=(18, 18)), text="", width=20)
         self.right_align.grid(row=0, column=11, padx=(2, 10), pady=10)
 
         # search box
         self.search_box = customtkinter.CTkEntry(self.top_frame, placeholder_text="Search", font=customtkinter.CTkFont(weight="bold"))
         self.search_box.grid(row=0, column=12, padx=(20, 0), pady=20)
+       
 
         # go button     
-        self.go = customtkinter.CTkButton(self.top_frame, text="Go", width=10, font=customtkinter.CTkFont(weight="bold"))
+        self.go = customtkinter.CTkButton(self.top_frame, text="", image=customtkinter.CTkImage(light_image=Image.open("icons/search_dark.png"), dark_image=Image.open("icons/search_light.png"), size=(18, 18)), width=10, height=10)
         self.go.grid(row=0, column=13, padx=10, pady=10)
+
+
 
         # scaling label
         self.scaling_optionemenu = customtkinter.CTkOptionMenu(self.top_frame, values=["80%", "85%", "90%", "95%", "100%", "105%", "110%"],command=self.change_scaling_event, width=90, font=customtkinter.CTkFont(weight="bold"))
@@ -164,7 +169,7 @@ class Photon(customtkinter.CTk):
         self.appearance_mode_optionemenu.grid(row=0, column=15, padx=(0,20), pady=10, sticky="w")
         
         # text-box
-        self.text_box = customtkinter.CTkTextbox(self, height=650)
+        self.text_box = customtkinter.CTkTextbox(self, height=650, corner_radius=0)
         self.text_box.grid(row=2, column=0, padx=10, sticky="nsew")
         self.text_box.focus()
 
@@ -480,7 +485,7 @@ class Photon(customtkinter.CTk):
             self.text_box.configure(fg_color=bg_color, text_color=fg_colour) 
         count = 0 
         for i in color_dict:
-            self.color_theme.add_radiobutton(label = i, image=color_icons[count], variable=theme_choice, compound=tk.LEFT, command=change_theme)
+            self.window.add_radiobutton(label = i, image=color_icons[count], variable=theme_choice, compound=tk.LEFT, command=change_theme)
             count += 1 
 
         # main menu function ends
