@@ -22,12 +22,17 @@ Some of the features of Photon Text Editor are:-
 # More
 <p align="justify">Photon aims to enhance productivity for programmers, writers, and professionals alike. Through the development of this text editor, the project tries to provide a comprehensive solution to the limitations faced by traditional text editors, fostering enhanced user experiences and efficient content management. Photon text editor holds the potential to impact the text editing landscape significantly and could greatly benefit from continuous user feedback and collaborative contributions.</p>
 
-
+Photon v1.2.0
 <img src="https://github.com/theranjitraut/Photon/blob/main/img/photonv120.png">
+Photon v1.1.0
 <img src="https://github.com/theranjitraut/Photon/blob/main/img/photonv110.png">
+Photon v1.0.2
 <img src="https://github.com/theranjitraut/Photon/blob/main/img/photonv102.png">
+Photon v1.0.1
 <img src="https://github.com/theranjitraut/Photon/blob/main/img/photonv101.png">
+Photon v1.0.0
 <img src="https://github.com/theranjitraut/Photon/blob/main/img/photonv100.png">
+Photon v0.0.0
 <img src="https://github.com/theranjitraut/Photon/blob/main/img/photonv000.png">
 
 # Resources
