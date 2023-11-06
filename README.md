@@ -4,9 +4,11 @@
 
 # Features
 Some of the features of Photon Text Editor are:-
-1. Basic text editor features like copy, cut, paste, find, replace, word count, etc.
-2. Cross-platform availability.
-3. Modern Graphical User Interface (GUI).
+1. Basic features include copy, cut, paste, find, and replace functionalities.
+2. Intermediate features include word, character, line, and column counters.
+3. Advanced features include translation (ne), text-to-speech (en), and various programming languages code editing functionality.
+4. Cross-platform availability.
+5. Modern Graphical User Interface (GUI).
 
 # Used Programming Language:
 [Python](https://www.python.org) (OOPs Paradigm)
