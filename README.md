@@ -7,7 +7,7 @@
 [![Discussions](https://img.shields.io/badge/discussions-view-yellow)](https://github.com/orgs/photontexteditor/discussions)
 # Photon
 ![Photon](https://github.com/photontexteditor/Photon/blob/main/img/photon.jpg)
-Photon `Photon Text Editor` is a modern text editor with minimalist features using an object-oriented paradigm. Photon is a minimal text editor that empowers users with features such as writing source code for multiple programming languages, copy, cut, find, replace, word count, and user control user interface as basic features.
+Photon `Photon Text Editor` is a modern text editor with minimalist features using an object-oriented paradigm. It is a minimal text editor that empowers users with features such as writing source code for multiple programming languages, copy, cut, find, replace, word count, and user control user interface as basic features.
 
 ## Table of Contents
 
@@ -20,7 +20,7 @@ Photon `Photon Text Editor` is a modern text editor with minimalist features usi
 - [Outcome](#outcome)
 
 ## Features
-Photon is being developed using the Python programming language and its robust libraries and frameworks. The development process will involve designing an intuitive user interface, integrating advanced text editing and code editing functionalities, and ensuring cross-platform compatibility. 
+Photon is developed using the `python` and its robust [libraries and frameworks](#moduleslibraries). The development process involved designing an intuitive modern user interface, integrating advanced text editing and code editing functionalities, and ensuring cross-platform compatibility. 
 
 Some of the features of Photon Text Editor are:-
 1. Basic features include copy, cut, paste, find, and replace functionalities.
