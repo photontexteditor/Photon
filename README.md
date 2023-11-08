@@ -5,7 +5,7 @@
 [![Versions](https://img.shields.io/badge/versions-1.2.0-orange)](https://github.com/photontexteditor/Photon/tags)
 [![Documentation](https://img.shields.io/badge/documentation-view-violet)](https://github.com/photontexteditor/Photon/blob/main/README.md)
 # Photon
-<img src="https://github.com/theranjitraut/Photon/blob/main/img/photon.jpg">
+<img src="https://github.com/photontexteditor/Photon/blob/main/img/photon.jpg">
 <p align="justify">"Photon" is a modern text editor with minimalist features using an object-oriented paradigm. It is being developed using the Python programming language and its robust libraries and frameworks. The development process will involve designing an intuitive user interface, integrating advanced text editing and code editing functionalities, and ensuring cross-platform compatibility. The anticipated outcome is a sophisticated text editor that empowers users with features such as writing source code for multiple programming languages, copy, cut, find, replace, word count, and user control user interface as basic features.</p>
 
 # Features
@@ -34,17 +34,17 @@ Some of the features of Photon Text Editor are:-
 <p align="justify">Photon aims to enhance productivity for programmers, writers, and professionals alike. Through the development of this text editor, the project tries to provide a comprehensive solution to the limitations faced by traditional text editors, fostering enhanced user experiences and efficient content management. Photon text editor holds the potential to impact the text editing landscape significantly and could greatly benefit from continuous user feedback and collaborative contributions.</p>
 
 Photon v1.2.0
-<img src="https://github.com/theranjitraut/Photon/blob/main/img/photonv120.png">
+<img src="https://github.com/photontexteditor/Photon/blob/main/img/photonv120.png">
 Photon v1.1.0
-<img src="https://github.com/theranjitraut/Photon/blob/main/img/photonv110.png">
+<img src="https://github.com/photontexteditor/Photon/blob/main/img/photonv110.png">
 Photon v1.0.2
-<img src="https://github.com/theranjitraut/Photon/blob/main/img/photonv102.png">
+<img src="https://github.com/photontexteditor/Photon/blob/main/img/photonv102.png">
 Photon v1.0.1
-<img src="https://github.com/theranjitraut/Photon/blob/main/img/photonv101.png">
+<img src="https://github.com/photontexteditor/Photon/blob/main/img/photonv101.png">
 Photon v1.0.0
-<img src="https://github.com/theranjitraut/Photon/blob/main/img/photonv100.png">
+<img src="https://github.com/photontexteditor/Photon/blob/main/img/photonv100.png">
 Photon v0.0.0
-<img src="https://github.com/theranjitraut/Photon/blob/main/img/photonv000.png">
+<img src="https://github.com/photontexteditor/Photon/blob/main/img/photonv000.png">
 
 # Resources
 1. Python tutorial - https://docs.python.org/3/tutorial/index.html
@@ -52,4 +52,4 @@ Photon v0.0.0
 3. customtkinter tutorial - https://customtkinter.tomschimansky.com/tutorial
 
 # Gantt Chart
-<img src="https://github.com/theranjitraut/Photon/blob/main/img/ganttchart.png">
+<img src="https://github.com/photontexteditor/Photon/blob/main/img/ganttchart.png">
