@@ -49,7 +49,7 @@ Photon v1.0.0
 ![Photon v1.0.0](https://github.com/photontexteditor/Photon/blob/main/img/photonv100.png)
 
 Photon v0.0.0
-![Photon](https://github.com/photontexteditor/Photon/blob/main/img/photonv000.png)
+![Photon v0.0.0](https://github.com/photontexteditor/Photon/blob/main/img/photonv000.png)
 
 
 # Resources
@@ -58,5 +58,5 @@ Photon v0.0.0
 3. customtkinter tutorial - https://customtkinter.tomschimansky.com/tutorial
 
 # Gantt Chart
-![Photon](https://github.com/photontexteditor/Photon/blob/main/img/ganttchart.png)
+![Photon Gantt Chart](https://github.com/photontexteditor/Photon/blob/main/img/ganttchart.png)
 
