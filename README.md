@@ -4,6 +4,7 @@
 [![License](https://img.shields.io/badge/license-mit-red)](https://github.com/photontexteditor/Photon/blob/main/LICENSE)
 [![Versions](https://img.shields.io/badge/versions-1.2.0-orange)](https://github.com/photontexteditor/Photon/tags)
 [![Documentation](https://img.shields.io/badge/documentation-view-violet)](https://github.com/photontexteditor/Photon/blob/main/README.md)
+[![Discussions](https://img.shields.io/badge/discussions-view-yellow)](https://github.com/orgs/photontexteditor/discussions)
 # Photon
 ![Photon](https://github.com/photontexteditor/Photon/blob/main/img/photon.jpg)
 <p align="justify">"Photon" is a modern text editor with minimalist features using an object-oriented paradigm. It is being developed using the Python programming language and its robust libraries and frameworks. The development process will involve designing an intuitive user interface, integrating advanced text editing and code editing functionalities, and ensuring cross-platform compatibility. The anticipated outcome is a sophisticated text editor that empowers users with features such as writing source code for multiple programming languages, copy, cut, find, replace, word count, and user control user interface as basic features.</p>
