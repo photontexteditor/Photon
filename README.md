@@ -2,7 +2,7 @@
 [![Contribution](https://img.shields.io/badge/contribute-welcome-green)](https://github.com/photontexteditor/Photon/blob/main/CONTRIBUTING.md)
 [![Code of Conduct](https://img.shields.io/badge/code%20of%20conduct-view-white)](https://github.com/photontexteditor/Photon/blob/main/CODE_OF_CONDUCT.md)
 [![License](https://img.shields.io/badge/license-mit-red)](https://github.com/photontexteditor/Photon/blob/main/LICENSE)
-[![Versions](https://img.shields.io/badge/versions-1.2.0-orange)](https://github.com/photontexteditor/Photon/tags)
+[![Versions](https://img.shields.io/badge/versions-1.3.0-orange)](https://github.com/photontexteditor/Photon/tags)
 [![Documentation](https://img.shields.io/badge/documentation-view-violet)](https://github.com/photontexteditor/Photon/blob/main/README.md)
 [![Discussions](https://img.shields.io/badge/discussions-view-yellow)](https://github.com/orgs/photontexteditor/discussions)
 # Photon
@@ -20,17 +20,17 @@ Photon `Photon Text Editor` is a modern text editor with minimalist features usi
 - [Outcome](#outcome)
 
 ## Features
-Photon is developed using the `python` and its robust [libraries and frameworks](#moduleslibraries). The development process involved designing an intuitive modern user interface, integrating advanced text editing and code editing functionalities, and ensuring cross-platform compatibility. 
+Photon is developed using [`python`](https://www.python.org/) and its robust [libraries and frameworks](#moduleslibraries). The development process involved designing an intuitive modern user interface, integrating advanced text editing and code editing functionalities, and ensuring cross-platform compatibility. 
 
 Some of the features of Photon Text Editor are:-
 1. Basic features include copy, cut, paste, find, and replace functionalities.
 2. Intermediate features include word, character, line, and column counters.
 3. Advanced features include translation (ne), text-to-speech (en), and various programming languages code editing functionality.
-4. Cross-platform availability.
+4. Cross-platform availability (Windows, Linux, and macOS).
 5. Modern Graphical User Interface (GUI).
 
 ## Programming Language:
-Photon is powered by [`python`](https://www.python.org) (OOPs Paradigm).
+Photon is developed using [`python`](https://www.python.org) (OOPs Paradigm).
 
 ## Modules/Libraries
 Photon is built using the following 'python' modules/libraries.
