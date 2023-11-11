@@ -1,22 +1,25 @@
-import os
-import tkinter as tk
-from tkinter import *
-from tkinter import ttk
+import os #importing os module 
+import tkinter as tk #importing tkinter module as tk
+from tkinter import * #importing all from tkinter
+from tkinter import ttk #importing ttk from tkinter
 from tkinter import font, colorchooser, filedialog, messagebox
-import customtkinter
-from PIL import Image
+import customtkinter #importing customtkinter
+from PIL import Image #importing Image from pillow library
 
 # appearance mode
-customtkinter.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark", "Light"
-customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue"
+customtkinter.set_appearance_mode("Dark")
+# Modes: "System" (standard), "Dark", "Light"
+customtkinter.set_default_color_theme("dark-blue")  
+# Themes: "blue" (standard), "green", "dark-blue"
 
 # text editor class/blueprint
 class Photon(customtkinter.CTk):
     def __init__(self):
         super().__init__()
+        # using super method to inherit all the attributes of base class to derived class
 
         # text editor title and geometry
-        self.iconbitmap("icons/photon.ico")
+        self.iconbitmap("photon.ico")
         self.title("Photon Text Editor")
         self.minsize(600,600)
         self.state("zoomed")
@@ -30,27 +33,27 @@ class Photon(customtkinter.CTk):
         self.main_menu = tk.Menu()
 
         # file icons
-        new_icon = tk.PhotoImage(file='icons/new.png')
-        open_icon = tk.PhotoImage(file='icons/open.png')
-        save_icon = tk.PhotoImage(file='icons/save.png')
-        save_as_icon = tk.PhotoImage(file='icons/save_as.png')
-        exit_icon = tk.PhotoImage(file='icons/exit.png')
+        new_icon = tk.PhotoImage(file='icons/new_icon.png')
+        open_icon = tk.PhotoImage(file='icons/open_icon.png')
+        save_icon = tk.PhotoImage(file='icons/save_icon.png')
+        save_as_icon = tk.PhotoImage(file='icons/saveas_icon.png')
+        exit_icon = tk.PhotoImage(file='icons/exit_icon.png')
+        export_icon = tk.PhotoImage(file='icons/exportas_icon.png')
 
         self.file = tk.Menu(self.main_menu, tearoff=False)
 
-        # # edit icons 
-        copy_icon = tk.PhotoImage(file='icons/copy.png')
-        paste_icon = tk.PhotoImage(file='icons/paste.png')
-        cut_icon = tk.PhotoImage(file='icons/cut.png')
-        clear_all_icon = tk.PhotoImage(file='icons/clear_all.png')
-        find_icon = tk.PhotoImage(file='icons/find.png')
-
+        # edit icons 
+        select_icon = tk.PhotoImage(file='icons/select_icon.png')
+        deselect_icon = tk.PhotoImage(file='icons/deselect_icon.png')
+        copy_icon = tk.PhotoImage(file='icons/copy_icon.png')
+        paste_icon = tk.PhotoImage(file='icons/paste_icon.png')
+        cut_icon = tk.PhotoImage(file='icons/cut_icon.png')
+        clear_all_icon = tk.PhotoImage(file='icons/clearall_icon.png')
+        find_icon = tk.PhotoImage(file='icons/find_icon.png')
+        
         self.edit = tk.Menu(self.main_menu, tearoff=False)
 
-        # # view icons 
-        tool_bar_icon = tk.PhotoImage(file='icons/tool_bar.png')
-        status_bar_icon = tk.PhotoImage(file='icons/status_bar.png')
-        
+        # view icons
         self.view = tk.Menu(self.main_menu, tearoff=False)
 
         # format icons
@@ -59,18 +62,10 @@ class Photon(customtkinter.CTk):
         # help icons
         self.help = tk.Menu(self.main_menu, tearoff=False)
 
-        # color theme 
-        light_default_icon = tk.PhotoImage(file='icons/light_default.png')
-        light_plus_icon = tk.PhotoImage(file='icons/light_plus.png')
-        dark_icon = tk.PhotoImage(file='icons/dark.png')
-        red_icon = tk.PhotoImage(file='icons/red.png')
-        monokai_icon = tk.PhotoImage(file='icons/monokai.png')
-        night_blue_icon = tk.PhotoImage(file='icons/night_blue.png')
-
+        # window icons 
         self.window = tk.Menu(self.main_menu, tearoff=False)
 
         theme_choice = tk.StringVar()
-        color_icons = (light_default_icon, light_plus_icon, dark_icon, red_icon, monokai_icon, night_blue_icon)
 
         color_dict = {
             'Light Default ' : ('#000000', '#ffffff'),
@@ -112,32 +107,32 @@ class Photon(customtkinter.CTk):
         self.size_var = tk.StringVar()
         self.font_size_box = customtkinter.CTkComboBox(self.top_frame, width=85, variable=self.size_var, values=['5', '6', '7', '8', '9', '10', '11', '12', '14', '16', '18', '20', '22', '24', '26', '28', '36', '48', '72'], state="readonly",font=customtkinter.CTkFont(weight="bold"))
         self.font_size_box.set('12')
-        self.font_size_box.grid(row=0, column=3, padx=10, pady=20)
+        self.font_size_box.grid(row=0, column=3, padx=(3, 3), pady=20)
 
         # font-color-button
         self.font_color_btn = customtkinter.CTkButton(self.top_frame, image=customtkinter.CTkImage(light_image=Image.open("icons/color.png"), dark_image=Image.open("icons/color_light.png"), size=(18, 18)), text="", width=20)
-        self.font_color_btn.grid(row=0, column=4, padx=(0, 10), pady=20)
+        self.font_color_btn.grid(row=0, column=4, padx=(0, 20), pady=20)
 
         # bold button
         self.bold_btn = customtkinter.CTkButton(self.top_frame, image=customtkinter.CTkImage(light_image=Image.open("icons/bold.png"), dark_image=Image.open("icons/bold_light.png"), size=(18, 18)), text="", width=20)
-        self.bold_btn.grid(row=0, column=5, padx=(20, 2), pady=5)
+        self.bold_btn.grid(row=0, column=5, padx=(20, 0), pady=5)
 
         # italic button
         self.italic_btn = customtkinter.CTkButton(self.top_frame, image=customtkinter.CTkImage(light_image=Image.open("icons/italic.png"), dark_image=Image.open("icons/italic_light.png"), size=(18, 18)), text="", width=20)
-        self.italic_btn.grid(row=0, column=6, padx=0, pady=5)
+        self.italic_btn.grid(row=0, column=6, padx=(3, 3), pady=5)
 
         # underline button
         self.underline_btn = customtkinter.CTkButton(self.top_frame, image=customtkinter.CTkImage(light_image=Image.open("icons/underline.png"), dark_image=Image.open("icons/underline_light.png"), size=(18, 18)), text="", width=20)
-        self.underline_btn.grid(row=0, column=7, padx=(2, 2), pady=10)
+        self.underline_btn.grid(row=0, column=7, padx=(0, 3), pady=10)
 
         # overstrike button
         self.overstrike_btn = customtkinter.CTkButton(self.top_frame, image=customtkinter.CTkImage(light_image=Image.open("icons/overstrike.png"), dark_image=Image.open("icons/overstrike_light.png"), size=(18, 18)), text="", width=20)
-        self.overstrike_btn.grid(row=0, column=8, padx=(0, 10), pady=10)
+        self.overstrike_btn.grid(row=0, column=8, padx=(0, 20), pady=10)
 
 
         # left align button
         self.left_align = customtkinter.CTkButton(self.top_frame, image=customtkinter.CTkImage(light_image=Image.open("icons/left_align.png"), dark_image=Image.open("icons/left_align_light.png"), size=(18, 18)), text="", width=20)
-        self.left_align.grid(row=0, column=9, padx=(10, 2), pady=10)
+        self.left_align.grid(row=0, column=9, padx=(20, 3), pady=10)
 
         # center align button
         self.center_align = customtkinter.CTkButton(self.top_frame, image=customtkinter.CTkImage(light_image=Image.open("icons/center_align.png"), dark_image=Image.open("icons/center_align_light.png"), size=(18, 18)), text="", width=20)
@@ -145,23 +140,20 @@ class Photon(customtkinter.CTk):
 
         # right align button
         self.right_align = customtkinter.CTkButton(self.top_frame, image=customtkinter.CTkImage(light_image=Image.open("icons/right_align.png"), dark_image=Image.open("icons/right_align_light.png"), size=(18, 18)), text="", width=20)
-        self.right_align.grid(row=0, column=11, padx=(2, 10), pady=10)
+        self.right_align.grid(row=0, column=11, padx=(3, 20), pady=10)
 
         # search box
         self.search_box = customtkinter.CTkEntry(self.top_frame, placeholder_text="Search", font=customtkinter.CTkFont(weight="bold"))
         self.search_box.grid(row=0, column=12, padx=(20, 0), pady=20)
-       
 
         # go button     
         self.go = customtkinter.CTkButton(self.top_frame, text="", image=customtkinter.CTkImage(light_image=Image.open("icons/search_dark.png"), dark_image=Image.open("icons/search_light.png"), size=(18, 18)), width=10, height=10)
-        self.go.grid(row=0, column=13, padx=10, pady=10)
-
-
+        self.go.grid(row=0, column=13, padx=(3, 20), pady=10)
 
         # scaling label
         self.scaling_optionemenu = customtkinter.CTkOptionMenu(self.top_frame, values=["80%", "85%", "90%", "95%", "100%", "105%", "110%"],command=self.change_scaling_event, width=90, font=customtkinter.CTkFont(weight="bold"))
         self.scaling_optionemenu.set('Scaling')
-        self.scaling_optionemenu.grid(row=0, column=14, padx=(10,20), pady=10, sticky="w")
+        self.scaling_optionemenu.grid(row=0, column=14, padx=(20, 20), pady=10, sticky="w")
 
         # appearance mode
         self.appearance_mode_optionemenu = customtkinter.CTkOptionMenu(self.top_frame, values=["Light", "Dark"],command=self.change_appearance_mode_event, width=60, font=customtkinter.CTkFont(weight="bold"))
@@ -349,7 +341,7 @@ class Photon(customtkinter.CTk):
                 return 
 
 
-        self.file.add_command(label='Save As', image=new_icon, compound=tk.LEFT, accelerator='Ctrl+Alt+S', command=save_as)
+        self.file.add_command(label='Save As', image=save_as_icon, compound=tk.LEFT, accelerator='Ctrl+Alt+S', command=save_as)
 
         # exit program function 
         def exit_func(event=None):
@@ -441,7 +433,7 @@ class Photon(customtkinter.CTk):
 
         # edit commands 
         self.edit.add_command(label='Copy', image=copy_icon, compound=tk.LEFT, accelerator='Ctrl+C', command=lambda : self.text_box.event_generate("<Control c>"))
-        self.edit.add_command(label='Paste', image=paste_icon, compound=tk.LEFT, accelerator='Ctrl+V', command=lambda : self.text_box.event_generate("<Control v>"))
+        self.edit.add_command(label='Paste',image=paste_icon, compound=tk.LEFT, accelerator='Ctrl+V', command=lambda : self.text_box.event_generate("<Control v>"))
         self.edit.add_command(label='Cut', image=cut_icon, compound=tk.LEFT, accelerator='Ctrl+X', command=lambda : self.text_box.event_generate("<Control x>"))
         self.edit.add_command(label='Clear All', image=clear_all_icon, compound=tk.LEFT, accelerator='Ctrl+Alt+X', command= lambda : self.text_box.delete(1.0, tk.END))
         self.edit.add_command(label='Find', image=find_icon, compound=tk.LEFT, accelerator='Ctrl+F', command = find_func)
@@ -474,8 +466,8 @@ class Photon(customtkinter.CTk):
                 show_statusbar = True 
 
 
-        self.view.add_checkbutton(label='Tool Bar',onvalue=True, offvalue=0,variable = show_top_frame, image=tool_bar_icon, compound=tk.LEFT, command=hide_top_frame)
-        self.view.add_checkbutton(label='Status Bar',onvalue=1, offvalue=False,variable = show_statusbar, image=status_bar_icon, compound=tk.LEFT, command=hide_statusbar)
+        self.view.add_checkbutton(label='Tool Bar',onvalue=True, offvalue=0,variable = show_top_frame, compound=tk.LEFT, command=hide_top_frame)
+        self.view.add_checkbutton(label='Status Bar',onvalue=1, offvalue=False,variable = show_statusbar, compound=tk.LEFT, command=hide_statusbar)
 
         # color theme 
         def change_theme():
@@ -485,7 +477,7 @@ class Photon(customtkinter.CTk):
             self.text_box.configure(fg_color=bg_color, text_color=fg_colour) 
         count = 0 
         for i in color_dict:
-            self.window.add_radiobutton(label = i, image=color_icons[count], variable=theme_choice, compound=tk.LEFT, command=change_theme)
+            self.window.add_radiobutton(label = i, variable=theme_choice, compound=tk.LEFT, command=change_theme)
             count += 1 
 
         # main menu function ends
