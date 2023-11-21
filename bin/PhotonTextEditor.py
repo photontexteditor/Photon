@@ -194,7 +194,7 @@ class Photon(customtkinter.CTk):
         self.go.grid(row=0, column=13, padx=(3, 20), pady=10)
 
         # scaling label
-        self.scaling_optionemenu = customtkinter.CTkOptionMenu(self.top_frame, values=["80%", "85%", "90%", "95%", "100%", "105%"],command=self.change_scaling_event, width=90, font=customtkinter.CTkFont(weight="bold"))
+        self.scaling_optionemenu = customtkinter.CTkOptionMenu(self.top_frame, values=["80%", "85%", "90%", "95%", "100%", "105%", "110%", "120%", "130%", "140%"],command=self.change_scaling_event, width=90, font=customtkinter.CTkFont(weight="bold"))
         self.scaling_optionemenu.set('Scaling')
         self.scaling_optionemenu.grid(row=0, column=14, padx=(20, 20), pady=10, sticky="w")
 
