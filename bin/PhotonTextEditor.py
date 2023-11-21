@@ -85,6 +85,7 @@ class Photon(customtkinter.CTk):
         self.help = tk.Menu(self.main_menu, tearoff=False)
 
         # window icons
+
         # color theme 
         self.window = tk.Menu(self.main_menu, tearoff=False)
 
@@ -223,7 +224,8 @@ class Photon(customtkinter.CTk):
         # self.bottom_frame.pack(side=tk.BOTTOM)
 
         # status bar
-        self.status_bar = customtkinter.CTkLabel(self.bottom_frame, text=f'Characters: {0}  Words: {0}\tUTF-8', font=customtkinter.CTkFont(weight="bold"))
+        (line, col)= self.text_box.index(tk.CURRENT).split(".")
+        self.status_bar = customtkinter.CTkLabel(self.bottom_frame, text=f'Characters: {0}  Words: {0}\tUTF-8\tLn {line}, Col {col}', font=customtkinter.CTkFont(weight="bold"))
         # self.status_bar.grid(row=0, column=0, sticky="nsew")
         self.status_bar.pack(side=tk.BOTTOM)
 
@@ -328,7 +330,8 @@ class Photon(customtkinter.CTk):
                 text_changed = True 
                 words = len(self.text_box.get(1.0, 'end-1c').split())
                 characters = len(self.text_box.get(1.0, 'end-1c'))
-                self.status_bar.configure(text=f'Characters: {characters}  Words: {words}\tUTF-8')
+                (line, col)= self.text_box.index(tk.CURRENT).split(".")
+                self.status_bar.configure(text=f'Characters: {characters}  Words: {words}\tUTF-8\tLn {line}, Col {col}')
             self.text_box.edit_modified(False)
 
         self.text_box.bind('<<Modified>>', changed)
