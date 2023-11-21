@@ -588,14 +588,14 @@ class Photon(customtkinter.CTk):
         self.help.add_command(label='Welcome', compound=tk.LEFT, command = lambda : tk.messagebox.showinfo(title="Welcome", message="Welcome to Photon! Your're using v1.4.0"))
         self.help.add_command(label='About Photon', compound=tk.LEFT, command = lambda : tk.messagebox.showinfo(title="About Photon", message="Photon Text Editor v1.4.0\nPowered by Python"))
         self.help.add_separator()
-        self.help.add_command(label='View License', compound=tk.LEFT, command = lambda : webbrowser.open_new_tab("https://github.com/theranjitraut/Photon/blob/main/LICENSE"))
+        self.help.add_command(label='View License', compound=tk.LEFT, command = lambda : webbrowser.open_new_tab("https://github.com/photontexteditor/Photon/blob/main/LICENSE"))
         
-        self.help.add_command(label='Privacy Statement', compound=tk.LEFT, command = lambda : webbrowser.open_new_tab("https://github.com/theranjitraut/Photon/blob/main/SECURITY.md"))
+        self.help.add_command(label='Privacy Statement', compound=tk.LEFT, command = lambda : webbrowser.open_new_tab("https://github.com/photontexteditor/Photon/blob/main/SECURITY.md"))
 
         self.help.add_separator()
-        self.help.add_command(label='Show Release Notes', compound=tk.LEFT, command = lambda : webbrowser.open_new_tab("https://github.com/theranjitraut/Photon/releases"))
-        self.help.add_command(label='Report Issue', compound=tk.LEFT, command = lambda : webbrowser.open_new_tab('https://github.com/theranjitraut/Photon/blob/main/CONTRIBUTING.md'))
-        self.help.add_command(label='Documentation', compound=tk.LEFT, command = lambda : webbrowser.open_new_tab("https://www.github.com/theranjitraut/Photon"))
+        self.help.add_command(label='Show Release Notes', compound=tk.LEFT, command = lambda : webbrowser.open_new_tab("https://github.com/photontexteditor/Photon/releases"))
+        self.help.add_command(label='Report Issue', compound=tk.LEFT, command = lambda : webbrowser.open_new_tab('https://github.com/photontexteditor/Photon/blob/main/CONTRIBUTING.md'))
+        self.help.add_command(label='Documentation', compound=tk.LEFT, command = lambda : webbrowser.open_new_tab("https://www.github.com/photontexteditor/Photon"))
 
         # window menu
         minimize_icon = tk.PhotoImage(file='icons/minimize_icon.png')
