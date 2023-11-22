@@ -19,7 +19,7 @@ import gtts
 #for text to speech
 from playsound import playsound 
 #for playing sound
-# from fpdf import FPDF 
+from fpdf import FPDF 
 # #for converting text to pdf
 
 # appearance mode
@@ -68,6 +68,7 @@ class Photon(customtkinter.CTk):
         cut_icon = tk.PhotoImage(file='icons/cut_icon.png')
         clear_all_icon = tk.PhotoImage(file='icons/clearall_icon.png')
         find_icon = tk.PhotoImage(file='icons/find_icon.png')
+        pdf_icon = tk.PhotoImage(file='icons/pdf_icon.png')
 
         self.edit = tk.Menu(self.main_menu, tearoff=False)
 
@@ -86,7 +87,6 @@ class Photon(customtkinter.CTk):
 
         # window icons
 
-        # color theme 
         self.window = tk.Menu(self.main_menu, tearoff=False)
 
         # color palettes for text box
@@ -124,13 +124,14 @@ class Photon(customtkinter.CTk):
         self.logo_text = customtkinter.CTkLabel(self.top_frame, text="PHOTON", font=customtkinter.CTkFont(size=15, weight="bold"))
         self.logo_text.grid(row=0, column=1, padx=(0, 20), pady=20)
 
+
         # font-family-box
         self.font_tuple = tk.font.families()
         self.font_family = tk.StringVar()
         self.font_family_box = customtkinter.CTkComboBox(self.top_frame, width=215, state="readonly", variable=self.font_family, values=self.font_tuple,font=customtkinter.CTkFont(weight="bold"))
         self.font_family_box.set('Times New Roman')
         self.font_family_box.grid(row=0, column=2, padx=(20,0), pady=20)
-
+        
         # font-size-box
         self.size_var = tk.StringVar()
         self.font_size_box = customtkinter.CTkComboBox(self.top_frame, width=85, variable=self.size_var, values=['5', '6', '7', '8', '9', '10', '11', '12', '14', '16', '18', '20', '22', '24', '26', '28', '36', '48', '72'], state="readonly",font=customtkinter.CTkFont(weight="bold"))
@@ -189,19 +190,23 @@ class Photon(customtkinter.CTk):
                     start_pos = end_pos
                     self.text_box.tag_config('match', foreground='blue', background='white')
 
+        # clear button
+        self.clear_button = customtkinter.CTkButton(self.top_frame, text="", image=customtkinter.CTkImage(light_image=Image.open("icons/clear_dark.png"), dark_image=Image.open("icons/clear_light.png"), size=(18, 18)), width=10, command= lambda : self.search_box.delete(0, tk.END))
+        self.clear_button.grid(row=0, column=13, padx=0, pady=10)
+
         # go button     
         self.go = customtkinter.CTkButton(self.top_frame, text="", image=customtkinter.CTkImage(light_image=Image.open("icons/search_dark.png"), dark_image=Image.open("icons/search_light.png"), size=(18, 18)), width=10, command=search)
-        self.go.grid(row=0, column=13, padx=(3, 20), pady=10)
+        self.go.grid(row=0, column=14, padx=(3, 20), pady=10)
 
         # scaling label
-        self.scaling_optionemenu = customtkinter.CTkOptionMenu(self.top_frame, values=["80%", "85%", "90%", "95%", "100%", "105%", "110%", "120%", "130%", "140%"],command=self.change_scaling_event, width=90, font=customtkinter.CTkFont(weight="bold"))
+        self.scaling_optionemenu = customtkinter.CTkOptionMenu(self.top_frame, values=["80%", "85%", "90%", "95%", "100%", "105%", "110%", "120%", "130%", "135%", "140%"],command=self.change_scaling_event, width=90, font=customtkinter.CTkFont(weight="bold"))
         self.scaling_optionemenu.set('Scaling')
-        self.scaling_optionemenu.grid(row=0, column=14, padx=(20, 20), pady=10, sticky="w")
+        self.scaling_optionemenu.grid(row=0, column=15, padx=(20, 5), pady=10, sticky="w")
 
         # appearance mode
         self.appearance_mode_optionemenu = customtkinter.CTkOptionMenu(self.top_frame, values=["Light", "Dark"],command=self.change_appearance_mode_event, width=60, font=customtkinter.CTkFont(weight="bold"))
         self.appearance_mode_optionemenu.set("Theme")
-        self.appearance_mode_optionemenu.grid(row=0, column=15, padx=(0,20), pady=10)
+        self.appearance_mode_optionemenu.grid(row=0, column=16, padx=(0,35), pady=10)
 
         # center frame
         self.center_frame = customtkinter.CTkFrame(self, corner_radius=0)
@@ -398,7 +403,50 @@ class Photon(customtkinter.CTk):
         self.file.add_command(label='Save As...', image=save_as_icon, compound=tk.LEFT, accelerator='Ctrl+Alt+S', command=save_as)
 
         # export as function
-        self.file.add_command(label='Export As', image=export_icon, compound=tk.LEFT, state=tk.DISABLED)
+        def export_func(event=None):
+            # nameofpdf = ''
+            def gopdf():
+                pdf = FPDF()
+                # add a page
+                pdf.add_page()
+                content = self.text_box.get(1.0, tk.END)
+                nameofpdf = self.dialog_entry.get()
+                pdf.add_font(current_font_family, '', f'{current_font_family}.ttf', uni=True)
+
+                # url = customtkinter.filedialog.asksaveasfile(mode = 'w', defaultextension='.txt',filetypes=(('PDF', '*.pdf')))
+                # url.write(content)
+                # url.close()
+
+                # set style and size of font that to be in the pdf
+                pdf.set_font(current_font_family, size = current_font_size)
+                (line, col)= self.text_box.index(tk.CURRENT).split(".")
+
+                # create a cell
+                pdf.multi_cell(int(line), int(col), txt = content, align = 'L')
+                pdf.output("{}.pdf".format(nameofpdf))
+
+            self.dialog = customtkinter.CTkToplevel()
+            self.dialog.geometry('450x150+500+200')
+            self.dialog.title('Export As PDF')
+            self.dialog.resizable(0,0)
+
+            # frame 
+            self.dialog_frame = customtkinter.CTkFrame(self.dialog)
+            self.dialog_frame.pack(pady=40)
+
+            # entry
+            self.dialog_entry = customtkinter.CTkEntry(self.dialog_frame, font=customtkinter.CTkFont(weight="bold"), placeholder_text="Name of PDF")
+            self.dialog_entry.grid(row=0, column=0, padx=4, pady=4)
+            # print(nameofpdf)
+            
+            # labels
+            self.dialog_label = customtkinter.CTkButton(self.dialog_frame, text="Export", font=customtkinter.CTkFont(weight="bold"), command=gopdf)
+            self.dialog_label.grid(row=1, column=0, padx=4, pady=4)
+
+            # save the pdf with name .pdf
+        self.export_menu = tk.Menu(self.file, tearoff=0)
+        self.export_menu.add_cascade(label="PDF", image=pdf_icon, compound=tk.LEFT, command=export_func)
+        self.file.add_cascade(label='Export As', image=export_icon, menu=self.export_menu, compound=tk.LEFT, state=tk.DISABLED)
 
 
         # exit file function 
@@ -490,8 +538,10 @@ class Photon(customtkinter.CTk):
             replace_button.grid(row=2, column=1, padx=8, pady=4, sticky="e")
 
         # edit commands 
-        self.edit.add_command(label='Select', image=select_icon, compound=tk.LEFT, accelerator='Ctrl+C', command=lambda : self.text_box.event_generate("<Control a>"), state=tk.DISABLED)
-        self.edit.add_command(label='Deselect', image=deselect_icon, compound=tk.LEFT, accelerator='Ctrl+C', command=lambda : self.text_box.event_generate("<Control d>"), state=tk.DISABLED)
+        # command change for windows and linux
+        self.edit.add_command(label='Select All', image=select_icon, compound=tk.LEFT, accelerator='Ctrl+A', command=lambda : self.text_box.event_generate("<Command a>"))
+        # command change for windows and linux
+        self.edit.add_command(label='Deselect All', image=deselect_icon, compound=tk.LEFT, accelerator='Shift+Control+L', command=lambda : self.text_box.event_generate("<Control d>"))
         self.edit.add_command(label='Copy', image=copy_icon, compound=tk.LEFT, accelerator='Ctrl+C', command=lambda : self.text_box.event_generate("<Control c>"))
         self.edit.add_command(label='Paste', image=paste_icon, compound=tk.LEFT, accelerator='Ctrl+V', command=lambda : self.text_box.event_generate("<Control v>"))
         self.edit.add_command(label='Cut', image=cut_icon, compound=tk.LEFT, accelerator='Ctrl+X', command=lambda : self.text_box.event_generate("<Control x>"))
@@ -515,7 +565,7 @@ class Photon(customtkinter.CTk):
             count += 1 
         
         self.view.add_cascade(label='Color Theme', image=color_theme, menu=self.color_theme, compound=tk.LEFT)
-        self.view.add_cascade(label="Keyboard Shortcuts", image=keyboard_shortcut, compound=tk.LEFT)
+        self.view.add_cascade(label="Keyboard Shortcuts", image=keyboard_shortcut, compound=tk.LEFT, state=tk.DISABLED)
 
         # view check button
         show_statusbar = tk.BooleanVar()
@@ -585,8 +635,8 @@ class Photon(customtkinter.CTk):
 
 
         # help commands
-        self.help.add_command(label='Welcome', compound=tk.LEFT, command = lambda : tk.messagebox.showinfo(title="Welcome", message="Welcome to Photon! Your're using v1.4.0"))
-        self.help.add_command(label='About Photon', compound=tk.LEFT, command = lambda : tk.messagebox.showinfo(title="About Photon", message="Photon Text Editor v1.4.0\nPowered by Python"))
+        self.help.add_command(label='Welcome', compound=tk.LEFT, command = lambda : tk.messagebox.showinfo(title="Welcome", message="Welcome to Photon! Your're using v1.6.0"))
+        self.help.add_command(label='About Photon', compound=tk.LEFT, command = lambda : tk.messagebox.showinfo(title="About Photon", message="Photon Text Editor v1.6.0\nPowered by Python"))
         self.help.add_separator()
         self.help.add_command(label='View License', compound=tk.LEFT, command = lambda : webbrowser.open_new_tab("https://github.com/photontexteditor/Photon/blob/main/LICENSE"))
         
@@ -639,6 +689,7 @@ class Photon(customtkinter.CTk):
         if text_catch!="\n":
             text_speech = gtts.gTTS(text_catch, lang='en', slow=False)
             # give folder path
+            os.chdir(f"{os.getcwd()}/speech")
             text_speech.save("speech.mp3")
             dialog = customtkinter.CTkToplevel()
             dialog.geometry('450x150+500+200')
