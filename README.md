@@ -24,10 +24,11 @@ Photon is developed using [`python`](https://www.python.org/) and its robust [li
 
 Some of the features of Photon Text Editor are:-
 1. Basic features include copy, cut, paste, find, and replace functionalities.
-2. Intermediate features include word, character, line, and column counters.
-3. Advanced features include translation (ne), text-to-speech (en), and various programming languages code editing functionality.
+2. Intermediate features include text wrap (char and word wrap), word counter, character counter, line counter, column counter, and automatic text/code recognition.
+3. Advanced features include translation (ne), text-to-speech (en), multiple programming language code editing functionality, line wrap.
 4. Cross-platform availability (Windows, Linux, and macOS).
 5. Modern Graphical User Interface (GUI).
+6. Compiler support (for C and C++) and Interpreter support (for Python and Java)
 
 ## Programming Language:
 Photon is developed using [`python`](https://www.python.org) (OOPs Paradigm).
