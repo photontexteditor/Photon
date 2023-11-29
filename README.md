@@ -44,7 +44,8 @@ Photon is built using the following 'python' modules/libraries.
 7. [playsound](https://pypi.org/project/playsound/)
 8. [Packaging in python:](https://packaging.python.org/en/latest/overview/) [PyInstaller](https://pyinstaller.org/en/stable/), [py2exe](https://www.py2exe.org/), [py2app](https://py2app.readthedocs.io/en/latest/), and [cx_Freeze](https://cx-freeze.readthedocs.io/en/stable/)
 9. subprocess
-10. datetime, time
+10. datetime
+11. time
 
 ## Screenshots
 `Photon v1.7.0`
