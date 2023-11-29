@@ -44,6 +44,9 @@ Photon is built using the following 'python' modules/libraries.
 8. [Packaging in python:](https://packaging.python.org/en/latest/overview/) [PyInstaller](https://pyinstaller.org/en/stable/), [py2exe](https://www.py2exe.org/), [py2app](https://py2app.readthedocs.io/en/latest/), and [cx_Freeze](https://cx-freeze.readthedocs.io/en/stable/)
 
 ## Screenshots
+`Photon v1.7.0`
+![Photon v1.7.0](https://github.com/photontexteditor/Photon/blob/main/img/photonv170.png)
+
 `Photon v1.6.0`
 ![Photon v1.6.0](https://github.com/photontexteditor/Photon/blob/main/img/photonv160.png)
 
