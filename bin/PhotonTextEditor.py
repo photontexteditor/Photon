@@ -3,33 +3,38 @@ import os
 import tkinter as tk 
 #importing tkinter module as tk
 from tkinter import * 
-#importing all from tkinter``
+#importing all from tkinter
 from tkinter import ttk 
 #importing ttk from tkinter
 from tkinter import font, colorchooser, filedialog, messagebox
 import customtkinter 
 #importing customtkinter
+# pip3 install customtkinter
 from PIL import Image 
 #importing Image from pillow library
+# pip3 install pillow
 import webbrowser 
 #for documentation link 
+# pip3 install webbrowser
 from googletrans import Translator 
 #for translation
+# pip3 install googletrans==3.1.0a0
 import gtts 
+# pip3 install gTTS  
 #for text to speech
 from playsound import playsound 
 #for playing sound
+# pip3 install playsound 
+import subprocess
+# subprocess
+import datetime as dt
+# for date implication
+from time import strftime
+# for time implication
 from fpdf import FPDF 
 # #for converting text to pdf
-'''
-pip3 install customtkinter
-pip3 install pillow
-pip3 install webbrowser
-pip3 install googletrans==3.1.0a0
-pip3 install gTTS  
-pip3 install playsound 
-pip3 install fpdf
-'''
+# pip3 install fpdf
+
 # appearance mode
 customtkinter.set_appearance_mode("Dark")  
 # Modes: "System" (standard), "Dark", "Light"
@@ -88,6 +93,9 @@ class Photon(customtkinter.CTk):
         # tools icons
         self.tools = tk.Menu(self.main_menu, tearoff=False)
 
+        # help icons
+        self.code = tk.Menu(self.main_menu, tearoff=False)
+
         # format icons
         self.format = tk.Menu(self.main_menu, tearoff=False)
 
@@ -124,13 +132,14 @@ class Photon(customtkinter.CTk):
         self.main_menu.add_cascade(label='View', menu=self.view)
         self.main_menu.add_cascade(label='Window', menu=self.window)
         self.main_menu.add_cascade(label='Tools', menu=self.tools)
+        self.main_menu.add_cascade(label='Code', menu=self.code)
         self.main_menu.add_cascade(label='Format', menu=self.format)
         self.main_menu.add_cascade(label='Help', menu=self.help)
 
         # top-frame
         self.top_frame = customtkinter.CTkFrame(self, corner_radius=0)
         self.top_frame.grid(row=0, column=0, sticky="nsew", padx=0, pady=0)
-        self.top_frame.grid_columnconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14), weight=1)
+        self.top_frame.grid_columnconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18), weight=1)
         # self.top_frame.pack(side=tk.TOP, fill=tk.X)
 
         # logo image
@@ -152,7 +161,7 @@ class Photon(customtkinter.CTk):
         # font-size-box
         self.size_var = tk.StringVar()
         self.font_size_box = customtkinter.CTkComboBox(self.top_frame, width=85, variable=self.size_var, values=['5', '6', '7', '8', '9', '10', '11', '12', '14', '16', '18', '20', '22', '24', '26', '28', '36', '48', '72'], state="readonly",font=customtkinter.CTkFont(weight="bold"))
-        self.font_size_box.set('12')
+        self.font_size_box.set('14')
         self.font_size_box.grid(row=0, column=3, padx=(3, 3), pady=20)
 
         # font-color-button
@@ -187,15 +196,126 @@ class Photon(customtkinter.CTk):
         self.right_align = customtkinter.CTkButton(self.top_frame, image=customtkinter.CTkImage(light_image=Image.open("icons/right_align.png"), dark_image=Image.open("icons/right_align_light.png"), size=(18, 18)), text="", width=20)
         self.right_align.grid(row=0, column=11, padx=(3, 20), pady=10)
 
+        # search box
+        self.search_box = customtkinter.CTkEntry(self.top_frame, placeholder_text="Search", font=customtkinter.CTkFont(weight="bold"))
+        self.search_box.grid(row=0, column=12, padx=(20, 0), pady=20)
+
+        def search(event=None):
+            fword = self.search_box.get()
+            self.text_box.tag_remove('match', '1.0', tk.END)
+            matches = 0
+            if fword:
+                start_pos = '0.0'
+                while True:
+                    start_pos = self.text_box.search(fword, start_pos, stopindex=tk.END)
+                    if not start_pos:
+                        break 
+                    end_pos = f'{start_pos}+{len(fword)}c'
+                    self.text_box.tag_add('match', start_pos, end_pos)
+                    matches += 1
+                    start_pos = end_pos
+                    self.text_box.tag_config('match', foreground='blue', background='white')
+
+        # clear button
+        def clearbutton(event=None):
+            self.search_box.delete(0, tk.END)
+
+        self.clear_button = customtkinter.CTkButton(self.top_frame, text="", image=customtkinter.CTkImage(light_image=Image.open("icons/clear_dark.png"), dark_image=Image.open("icons/clear_light.png"), size=(18, 18)), width=10, command= clearbutton)
+        self.clear_button.grid(row=0, column=13, padx=0, pady=10)
+
+        # go button     
+        self.go = customtkinter.CTkButton(self.top_frame, text="", image=customtkinter.CTkImage(light_image=Image.open("icons/search_dark.png"), dark_image=Image.open("icons/search_light.png"), size=(18, 18)), width=10, command=search)
+        self.go.grid(row=0, column=14, padx=(3, 20), pady=10)
+
+        # run mode
+        def code():
+            def set_file_path(path):
+                global file_path
+                file_path = path
+
+            def terminal():
+                if file_path == '':
+                    self.save_prompt = customtkinter.CTkToplevel()
+                    self.save_prompt.geometry('450x250+500+200')
+                    self.save_prompt.title('Warning!')
+                    self.save_prompt.resizable(0,0)
+                    text = customtkinter.CTkLabel(self.save_prompt, text="Please save your CODE!", font=customtkinter.CTkFont(weight="bold"))
+                    text.pack(fill=tk.BOTH, expand=True)
+                    return
+
+                filename, fileextension = os.path.splitext(file_path)
+                if fileextension == ".java":
+                    command = f'java {file_path}'
+                    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+                    output, error = process.communicate()
+                
+                elif fileextension == ".py":
+                    command = f'python3 {file_path}'
+                    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+                    output, error = process.communicate()
+
+                elif fileextension == ".c":
+                    files = os.path.basename(file_path)
+                    file_name, fileextension = os.path.splitext(files)
+                    command = f'gcc {file_path} -o {file_name} && ./{file_name}'
+                    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+                    output, error = process.communicate()
+                
+                elif fileextension == ".cpp":
+                    files = os.path.basename(file_path)
+                    file_name, fileextension = os.path.splitext(files)
+                    command = f'g++ {file_path} -o {file_name} && ./{file_name}'
+                    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+                    output, error = process.communicate()
+
+                elif fileextension == ".r":
+                    command = f'R {file_path}'
+                    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+                    output, error = process.communicate()
+
+                elif fileextension == ".dart":
+                    command = f'dart {file_path}'
+                    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+                    output, error = process.communicate()
+                
+                # self.text_box.insert('1.0', output)
+                # self.text_box.insert('1.0',  error)
+
+                self.dialog = customtkinter.CTkToplevel()
+                self.dialog.geometry('450x250+500+200')
+                self.dialog.title('Output')
+                self.dialog.resizable(0,0)
+
+                # frame 
+                # self.dialog_frame = customtkinter.CTkFrame(self.dialog)
+                # self.dialog_frame.pack(pady=40)
+                
+                # labels
+                self.dialog_label = customtkinter.CTkTextbox(self.dialog, font=customtkinter.CTkFont(weight="bold"), state="normal")
+                self.dialog_label.insert('1.0', output)
+                self.dialog_label.insert('1.0',  error)
+                self.dialog_label.pack(fill=tk.BOTH, expand=True)
+    
+            self.run_btn = customtkinter.CTkButton(self.top_frame, image=customtkinter.CTkImage(light_image=Image.open("icons/run_dark.png"), dark_image=Image.open("icons/run_light.png"), size=(18, 18)), text="", width=10, command=terminal)
+            self.run_btn.grid(row=0, column=16, padx=(10, 10), pady=10, sticky="w")
+
         # scaling label
         self.scaling_optionemenu = customtkinter.CTkOptionMenu(self.top_frame, values=["80%", "85%", "90%", "95%", "100%", "105%", "110%", "120%", "130%", "135%", "140%"],command=self.change_scaling_event, width=90, font=customtkinter.CTkFont(weight="bold"))
         self.scaling_optionemenu.set('Scaling')
-        self.scaling_optionemenu.grid(row=0, column=15, padx=(20, 5), pady=10, sticky="w")
+        self.scaling_optionemenu.grid(row=0, column=17, padx=(20, 5), pady=10, sticky="w")
+
+        # code mode
+        # def switch_event():
+        #     print("switch toggled, current value:", switch_var.get())
+
+        # switch_var = customtkinter.StringVar(value="on")
+        # self.switch = customtkinter.CTkSwitch(self.top_frame, text="CTkSwitch", command=switch_event, variable=switch_var, onvalue="on", offvalue="off")
+        # self.switch.grid(row=0, column=15, padx=(20, 5), pady=10)
 
         # appearance mode
         self.appearance_mode_optionemenu = customtkinter.CTkOptionMenu(self.top_frame, values=["Light", "Dark"],command=self.change_appearance_mode_event, width=60, font=customtkinter.CTkFont(weight="bold"))
         self.appearance_mode_optionemenu.set("Theme")
-        self.appearance_mode_optionemenu.grid(row=0, column=16, padx=(0,35), pady=10)
+        self.appearance_mode_optionemenu.grid(row=0, column=18, padx=(0,35), pady=10)
 
         # center frame
         self.center_frame = customtkinter.CTkFrame(self, corner_radius=0)
@@ -203,29 +323,74 @@ class Photon(customtkinter.CTk):
         self.center_frame.grid_columnconfigure(0, weight=1)
         self.center_frame.grid_rowconfigure(0, weight=1)
         # self.center_frame.pack(fill=tk.BOTH, expand=True)
+        # self.center_frame.pack(side=tk.LEFT, expand=1)
+
+        # line number
+        # self.line_number = tk.Text(self.center_frame, font="bold", width=2)
+        # self.line_number.grid(row=1, column=0, sticky="ew")
+        # self.line_number.insert(1.0, "1")
+        # self.line_number.configure(state='disabled')
+        # def on_key_press(event=None):
+        #     final_index = str(self.text_box.index(tk.END))
+        #     num_of_lines = final_index.split('.')[0]
+        #     line_numbers_string = "\n".join(str(no + 1) for no in range(int(num_of_lines)))
+        #     width = len(str(num_of_lines))
+ 
+        #     self.line_number.configure(state='normal', width=width)
+        #     self.line_number.delete(1.0, tk.END)
+        #     self.line_number.insert(1.0, line_numbers_string)
+        #     self.line_number.configure(state='disabled')
+
+        # self.line_number.pack(side=tk.LEFT)
 
         # text-box
-        self.text_box = customtkinter.CTkTextbox(self.center_frame, corner_radius=0, height=650)
-        self.text_box.grid(row=0, column=0, sticky="nsew")
-        # self.text_box.pack(fill=tk.BOTH, expand=True)
-        self.text_box.focus()
+        self.text_box = customtkinter.CTkTextbox(self.center_frame, corner_radius=0, height=650, undo=True, wrap="none")
+        self.text_box.grid(row=1, column=0, sticky="nsew")
+        # self.text_box.pack(side=tk.LEFT, expand=True)
+        self.text_box.focus_set()
+        # self.text_box.config(insertbackground=)
+        # self.text_box.bind('<KeyPress>', on_key_press)
 
         # bottom frame
         self.bottom_frame = customtkinter.CTkFrame(self, corner_radius=0)
         self.bottom_frame.grid(row=2, column=0, sticky="nsew", padx=0, pady=0)
-        self.bottom_frame.grid_columnconfigure(0, weight=1)
-        self.bottom_frame.grid_rowconfigure(0, weight=1)
+        self.bottom_frame.grid_columnconfigure((2,3,4), weight=1)
+        self.bottom_frame.grid_rowconfigure((2,3,4), weight=1)
         # self.bottom_frame.pack(side=tk.BOTTOM)
 
         # status bar
+        date = dt.datetime.now()
+        date_string = f"{date:%a, %b %d, %y}"
+        time_string = strftime('%H:%M %p')
+
+        def my_datetime():
+            nonlocal time_string
+            nonlocal date_string
+            time_string = strftime('%H:%M %p')
+            date = dt.datetime.now()
+            date_string = f"{date:%a, %b %d, %y}"
+            self.status_bar3.configure(text=f'{time_string}, {date_string}')
+            self.status_bar3.after(10000, my_datetime)
+
         (line, col)= self.text_box.index(tk.CURRENT).split(".")
-        self.status_bar = customtkinter.CTkLabel(self.bottom_frame, text=f'Characters: {0}  Words: {0}\tUTF-8\tLn {line}, Col {col}', font=customtkinter.CTkFont(weight="bold"))
-        # self.status_bar.grid(row=0, column=0, sticky="nsew")
-        self.status_bar.pack(side=tk.BOTTOM)
+
+        self.status_bar1 = customtkinter.CTkLabel(self.bottom_frame, text=f'Characters: {0}  Words: {0}\tLn {line}, Col {col}', font=customtkinter.CTkFont(weight="bold"))
+        self.status_bar1.grid(row=0, column=2)
+        # self.status_bar1.pack(side=tk.LEFT)
+
+        self.status_bar2 = customtkinter.CTkLabel(self.bottom_frame, text="", font=customtkinter.CTkFont(weight="bold"))
+        self.status_bar2.grid(row=0, column=3)
+
+        self.status_bar3 = customtkinter.CTkLabel(self.bottom_frame, text=f'{time_string}, {date_string}', font=customtkinter.CTkFont(weight="bold"))
+        self.status_bar3.grid(row=0, column=4)
+        # self.status_bar2.pack(side=tk.RIGHT)
+       
+
+        # self.status_bar.pack(side=tk.BOTTOM)
 
         # font family and font size function 
         current_font_family = 'Times New Roman'
-        current_font_size = 12
+        current_font_size = 14
 
         def change_font(event=None):
             nonlocal current_font_family
@@ -321,48 +486,17 @@ class Photon(customtkinter.CTk):
         # status bar
         text_changed = False 
         def changed(event=None):
+            my_datetime()
             nonlocal text_changed
             if self.text_box.edit_modified():
                 text_changed = True 
                 words = len(self.text_box.get(1.0, 'end-1c').split())
                 characters = len(self.text_box.get(1.0, 'end-1c'))
                 (line, col)= self.text_box.index(tk.CURRENT).split(".")
-                self.status_bar.configure(text=f'Characters: {characters}  Words: {words}\tUTF-8\tLn {line}, Col {col}')
+                self.status_bar1.configure(text=f'Characters: {characters}  Words: {words}\tLn {line}, Col {col}')
             self.text_box.edit_modified(False)
 
         self.text_box.bind('<<Modified>>', changed)
-
-
-        # search box
-        self.search_box = customtkinter.CTkEntry(self.top_frame, placeholder_text="Search", font=customtkinter.CTkFont(weight="bold"))
-        self.search_box.grid(row=0, column=12, padx=(20, 0), pady=20)
-
-        def search():
-            fword = self.search_box.get()
-            self.text_box.tag_remove('match', '1.0', tk.END)
-            matches = 0
-            if fword:
-                start_pos = '0.0'
-                while True:
-                    start_pos = self.text_box.search(fword, start_pos, stopindex=tk.END)
-                    if not start_pos:
-                        break 
-                    end_pos = f'{start_pos}+{len(fword)}c'
-                    self.text_box.tag_add('match', start_pos, end_pos)
-                    matches += 1
-                    start_pos = end_pos
-                    self.text_box.tag_config('match', foreground='blue', background='white')
-
-        # clear button
-        def clearbutton(event=None):
-            self.search_box.delete(0, tk.END)
-
-        self.clear_button = customtkinter.CTkButton(self.top_frame, text="", image=customtkinter.CTkImage(light_image=Image.open("icons/clear_dark.png"), dark_image=Image.open("icons/clear_light.png"), size=(18, 18)), width=10, command= clearbutton)
-        self.clear_button.grid(row=0, column=13, padx=0, pady=10)
-
-        # go button     
-        self.go = customtkinter.CTkButton(self.top_frame, text="", image=customtkinter.CTkImage(light_image=Image.open("icons/search_dark.png"), dark_image=Image.open("icons/search_light.png"), size=(18, 18)), width=10, command=search)
-        self.go.grid(row=0, column=14, padx=(3, 20), pady=10)
 
         # main menu function begins
         url = ''
@@ -377,20 +511,81 @@ class Photon(customtkinter.CTk):
         self.file.add_command(label='New...', image=new_icon, compound=tk.LEFT, accelerator='Ctrl+N', command=new_file)
 
         # open file function
+        file_path = ''
         def open_file(event=None):
             nonlocal url 
-            url = customtkinter.filedialog.askopenfilename(initialdir=os.getcwd(), title='Select File', filetypes=(('Text File', '*.txt'), ('All files', '*.*')))
+            url = customtkinter.filedialog.askopenfilename(initialdir=os.getcwd(), title='Select File', filetypes=(('Text File', '*.txt'), ('Python Code', '*.py'), ('Java Code', '*.java'), ('C Code', '*.c'), ('C++ Code', '*.cpp'), ('R Code', '*.r'), ('Dart Code', '*.dart'), ('All files', '*.*')))
             try:
                 with open(url, 'r') as fr:
                     self.text_box.delete(1.0, tk.END)
                     self.text_box.insert(1.0, fr.read())
+                    set_file_path(url)
             except FileNotFoundError:
                 return 
             except:
                 return 
-            app.title(os.path.basename(url))
+            self.title(os.path.basename(url))
+            files = os.path.basename(file_path)
+            file_name, fileextension = os.path.splitext(files)
+            if(fileextension == ".txt"):
+                self.status_bar2.configure(text="Plain Text")
+
+            elif(fileextension == ".py"):
+                self.status_bar2.configure(text="Python")
+
+            elif(fileextension == ".java"):
+                self.status_bar2.configure(text="Java")
+
+            elif(fileextension == ".js"):
+                self.status_bar2.configure(text="JavaScript")
+
+            elif(fileextension == ".r"):
+                self.status_bar2.configure(text="R")
+
+            elif(fileextension == ".cs"):
+                self.status_bar2.configure(text="C#")
+            
+            elif(fileextension == ".md"):
+                self.status_bar2.configure(text="Markdown")
+            
+            elif(fileextension == ".bas"):
+                self.status_bar2.configure(text="BASIC")
+            
+            elif(fileextension == ".go"):
+                self.status_bar2.configure(text="Golang")
+            
+            elif(fileextension == ".jl"):
+                self.status_bar2.configure(text="Julia")
+            
+            elif(fileextension == ".kt"):
+                self.status_bar2.configure(text="Kotlin")
+            
+            elif(fileextension == ".php"):
+                self.status_bar2.configure(text="PHP")
+
+            elif(fileextension == ".rb"):
+                self.status_bar2.configure(text="Ruby")
+
+            elif(fileextension == ".rs"):
+                self.status_bar2.configure(text="Rust")
+
+            elif(fileextension == ".scala"):
+                self.status_bar2.configure(text="Scala")
+            
+            elif(fileextension == ".sml"):
+                self.status_bar2.configure(text="Standard ML")
+            
+            elif(fileextension == ".swift"):
+                self.status_bar2.configure(text="Swift")
+          
+            elif(fileextension == ".c"):
+                self.status_bar2.configure(text="C")
+          
+            elif(fileextension == ".cpp"):
+                self.status_bar2.configure(text="C++")
 
         self.file.add_command(label='Open...', image=open_icon, compound=tk.LEFT, accelerator='Ctrl+O', command=open_file)
+        self.file.add_separator()
 
         # save file function
         def save_file(event=None):
@@ -407,6 +602,65 @@ class Photon(customtkinter.CTk):
                     url.close()
             except:
                 return 
+            self.title(os.path.basename(url))
+            files = os.path.basename(file_path)
+            file_name, fileextension = os.path.splitext(files)
+            if(fileextension == ".txt"):
+                self.status_bar2.configure(text="Plain Text")
+
+            elif(fileextension == ".py"):
+                self.status_bar2.configure(text="Python")
+
+            elif(fileextension == ".java"):
+                self.status_bar2.configure(text="Java")
+
+            elif(fileextension == ".js"):
+                self.status_bar2.configure(text="JavaScript")
+
+            elif(fileextension == ".r"):
+                self.status_bar2.configure(text="R")
+                
+            elif(fileextension == ".cs"):
+                self.status_bar2.configure(text="C#")
+            
+            elif(fileextension == ".md"):
+                self.status_bar2.configure(text="Markdown")
+            
+            elif(fileextension == ".bas"):
+                self.status_bar2.configure(text="BASIC")
+            
+            elif(fileextension == ".go"):
+                self.status_bar2.configure(text="Golang")
+            
+            elif(fileextension == ".jl"):
+                self.status_bar2.configure(text="Julia")
+            
+            elif(fileextension == ".kt"):
+                self.status_bar2.configure(text="Kotlin")
+            
+            elif(fileextension == ".php"):
+                self.status_bar2.configure(text="PHP")
+
+            elif(fileextension == ".rb"):
+                self.status_bar2.configure(text="Ruby")
+
+            elif(fileextension == ".rs"):
+                self.status_bar2.configure(text="Rust")
+
+            elif(fileextension == ".scala"):
+                self.status_bar2.configure(text="Scala")
+            
+            elif(fileextension == ".sml"):
+                self.status_bar2.configure(text="Standard ML")
+            
+            elif(fileextension == ".swift"):
+                self.status_bar2.configure(text="Swift")
+
+            elif(fileextension == ".c"):
+                self.status_bar2.configure(text="C")
+          
+            elif(fileextension == ".cpp"):
+                self.status_bar2.configure(text="C++")
 
         self.file.add_command(label='Save', image=save_icon, compound=tk.LEFT, accelerator='Ctrl+S', command = save_file)
 
@@ -415,13 +669,76 @@ class Photon(customtkinter.CTk):
             nonlocal url 
             try:
                 content = self.text_box.get(1.0, tk.END)
-                url = customtkinter.filedialog.asksaveasfile(mode = 'w', defaultextension='.txt', filetypes=(('Text File', '*.txt'), ('Python Script', '*.py'), ('C++ Script', '*.cpp'), ('C# Script', '*.cs'), ('Java Script', '*.java'), ('R Script', '*.r'), ("Word Document", '*.docx'), ("PDF", "*.pdf"), ('All files', '*.*')))
+                url = customtkinter.filedialog.asksaveasfile(mode = 'w', defaultextension='.txt', filetypes=(('Text File', '*.txt'), ('Python Script', '*.py'), ('C++ Script', '*.cpp'), ('C# Script', '*.cs'), ('Java Script', '*.java'), ('R Script', '*.r'), ('Dart Script', '*.dart'), ("Word Document", '*.docx'), ("PDF", "*.pdf"), ('All files', '*.*')))
+                set_file_path(path)
                 url.write(content)
                 url.close()
             except:
                 return 
+            self.title(os.path.basename(url))
+            files = os.path.basename(file_path)
+            file_name, fileextension = os.path.splitext(files)
+            files = os.path.basename(file_path)
+            file_name, fileextension = os.path.splitext(files)
+            if(fileextension == ".txt"):
+                self.status_bar2.configure(text="Plain Text")
+
+            elif(fileextension == ".py"):
+                self.status_bar2.configure(text="Python")
+
+            elif(fileextension == ".java"):
+                self.status_bar2.configure(text="Java")
+
+            elif(fileextension == ".js"):
+                self.status_bar2.configure(text="JavaScript")
+
+            elif(fileextension == ".r"):
+                self.status_bar2.configure(text="R")
+                
+            elif(fileextension == ".cs"):
+                self.status_bar2.configure(text="C#")
+            
+            elif(fileextension == ".md"):
+                self.status_bar2.configure(text="Markdown")
+            
+            elif(fileextension == ".bas"):
+                self.status_bar2.configure(text="BASIC")
+            
+            elif(fileextension == ".go"):
+                self.status_bar2.configure(text="Golang")
+            
+            elif(fileextension == ".jl"):
+                self.status_bar2.configure(text="Julia")
+            
+            elif(fileextension == ".kt"):
+                self.status_bar2.configure(text="Kotlin")
+            
+            elif(fileextension == ".php"):
+                self.status_bar2.configure(text="PHP")
+
+            elif(fileextension == ".rb"):
+                self.status_bar2.configure(text="Ruby")
+
+            elif(fileextension == ".rs"):
+                self.status_bar2.configure(text="Rust")
+
+            elif(fileextension == ".scala"):
+                self.status_bar2.configure(text="Scala")
+            
+            elif(fileextension == ".sml"):
+                self.status_bar2.configure(text="Standard ML")
+            
+            elif(fileextension == ".swift"):
+                self.status_bar2.configure(text="Swift")
+            
+            elif(fileextension == ".c"):
+                self.status_bar2.configure(text="C")
+          
+            elif(fileextension == ".cpp"):
+                self.status_bar2.configure(text="C++")
 
         self.file.add_command(label='Save As...', image=save_as_icon, compound=tk.LEFT, accelerator='Ctrl+Alt+S', command=save_as)
+        self.file.add_separator()
 
         # export as function
         def export_func(event=None):
@@ -464,11 +781,11 @@ class Photon(customtkinter.CTk):
             self.dialog_label = customtkinter.CTkButton(self.dialog_frame, text="Export", font=customtkinter.CTkFont(weight="bold"), command=gopdf)
             self.dialog_label.grid(row=1, column=0, padx=4, pady=4)
 
-            # save the pdf with name .pdf
+        # save the pdf with name .pdf
         self.export_menu = tk.Menu(self.file, tearoff=0)
         self.export_menu.add_cascade(label="PDF", image=pdf_icon, compound=tk.LEFT, command=export_func)
         self.file.add_cascade(label='Export As', image=export_icon, menu=self.export_menu, compound=tk.LEFT, state=tk.DISABLED)
-
+        self.file.add_cascade(label='Settings', image=export_icon, compound=tk.LEFT, state=tk.DISABLED)
 
         # exit file function 
         def exit_func(event=None):
@@ -558,16 +875,45 @@ class Photon(customtkinter.CTk):
             find_button.grid(row=2, column=0, padx=8, pady=4, sticky="w")
             replace_button.grid(row=2, column=1, padx=8, pady=4, sticky="e")
 
+        # image func
+        def img_func():
+            # my_image = tk.PhotoImage(file='icons/new_icon.png')
+            myimage = customtkinter.filedialog.askopenfilename(title = "Select your image",filetypes = [("Image Files","*.png"),("Image Files","*.jpg")])
+            #imgFile=Image.open(myimage)
+            imgToInsert = PhotoImage(file = myimage)
+            self.text_box.image_create("current", image=imgToInsert)
+
+            # my_image = customtkinter.CTkImage(light_image=Image.open("icons/photon.png"),
+            #                       dark_image=Image.open("icons/photon.png"))
+            # image_position = self.text_box.index(tk.INSERT)
+            # self.text_box.image_create(tk.END, image=my_image)
+
+
         # edit commands 
         # command change for windows and linux
+        def copy_text(event=None):
+            self.text_box.event_generate("<Command c>")
+
+        def cut_text(event=None):
+            self.text_box.event_generate("<Command x>")
+
+        def paste_text(event=None):
+            self.text_box.event_generate("<Command v>")
+
+        self.edit.add_command(label='Undo', image=select_icon, compound=tk.LEFT, accelerator='Ctrl+Z', command=self.text_box.edit_undo)
+        self.edit.add_command(label='Redo', image=select_icon, compound=tk.LEFT, accelerator='Ctrl+Shift+Z', command=self.text_box.edit_redo)
+        self.edit.add_separator()
         self.edit.add_command(label='Select All', image=select_icon, compound=tk.LEFT, accelerator='Ctrl+A', command=lambda : self.text_box.event_generate("<Command a>"))
         # command change for windows and linux
         self.edit.add_command(label='Deselect All', image=deselect_icon, compound=tk.LEFT, accelerator='Shift+Control+L', command=lambda : self.text_box.event_generate("<Control d>"))
-        self.edit.add_command(label='Copy', image=copy_icon, compound=tk.LEFT, accelerator='Ctrl+C', command=lambda : self.text_box.event_generate("<Control c>"))
-        self.edit.add_command(label='Paste', image=paste_icon, compound=tk.LEFT, accelerator='Ctrl+V', command=lambda : self.text_box.event_generate("<Control v>"))
-        self.edit.add_command(label='Cut', image=cut_icon, compound=tk.LEFT, accelerator='Ctrl+X', command=lambda : self.text_box.event_generate("<Control x>"))
         self.edit.add_command(label='Clear All', image=clear_all_icon, compound=tk.LEFT, accelerator='Ctrl+Alt+X', command= lambda : self.text_box.delete(1.0, tk.END))
+        self.edit.add_separator()
+        self.edit.add_command(label='Copy', image=copy_icon, compound=tk.LEFT, accelerator='Ctrl+C', command=copy_text)
+        self.edit.add_command(label='Paste', image=paste_icon, compound=tk.LEFT, accelerator='Ctrl+V', command=paste_text)
+        self.edit.add_command(label='Cut', image=cut_icon, compound=tk.LEFT, accelerator='Ctrl+X', command=cut_text)
+        self.edit.add_separator()
         self.edit.add_command(label='Find/Replace', image=find_icon, compound=tk.LEFT, accelerator='Ctrl+F', command = find_func)
+        self.edit.add_command(label='Add an image', image=find_icon, compound=tk.LEFT, accelerator='Ctrl+F', command = img_func, state=tk.DISABLED)
 
         # view menu commands 
         # color theme 
@@ -585,12 +931,24 @@ class Photon(customtkinter.CTk):
             self.color_theme.add_radiobutton(label = i, variable=theme_choice, compound=tk.LEFT, command=change_theme) #image=color_icons[count]
             count += 1 
         
+        # text wrap
+        def char_wrap(event=None):
+            self.text_box.configure(wrap="char")
+
+        def word_wrap(event=None):
+            self.text_box.configure(wrap="word")
+
+        self.text_wrap = tk.Menu(self.view, tearoff=0)
+        self.text_wrap.add_radiobutton(label = " Char Wrap", compound=tk.LEFT, command=char_wrap) 
+        self.text_wrap.add_radiobutton(label = " Word Wrap", compound=tk.LEFT, command=word_wrap) 
+        self.view.add_cascade(label='Wrap', image=color_theme, menu=self.text_wrap, compound=tk.LEFT)
+        self.view.add_separator()
         self.view.add_cascade(label='Color Theme', image=color_theme, menu=self.color_theme, compound=tk.LEFT)
         self.view.add_cascade(label="Keyboard Shortcuts", image=keyboard_shortcut, compound=tk.LEFT, state=tk.DISABLED)
 
         # view check button
-        show_statusbar = tk.BooleanVar()
-        show_statusbar.set(True)
+        show_bottom_frame = tk.BooleanVar()
+        show_bottom_frame.set(True)
         show_top_frame = tk.BooleanVar()
         show_top_frame.set(True)
         def hide_top_frame():
@@ -600,34 +958,44 @@ class Photon(customtkinter.CTk):
                 show_top_frame = False 
             else :
                 self.text_box.grid_forget()
-                self.status_bar.grid_forget()
+                self.bottom_frame.grid_forget()
                 self.top_frame.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
                 self.text_box.pack(fill=tk.BOTH, expand=True)
-                self.status_bar.pack(side=tk.BOTTOM)
+                self.bottom_frame.pack(side=tk.BOTTOM)
                 show_top_frame = True 
 
         def hide_statusbar():
-            nonlocal show_statusbar
-            if show_statusbar:
+            nonlocal show_bottom_frame
+            if show_bottom_frame:
                 self.bottom_frame.grid_forget()
-                show_statusbar = False 
+                show_bottom_frame = False 
             else :
                 self.bottom_frame.grid(row=3, column=0, sticky="nsew")
                 # self.status_bar.pack(side=tk.BOTTOM)
-                show_statusbar = True 
+                show_bottom_frame = True 
 
-
+        self.view.add_separator()
         self.view.add_checkbutton(label=' Tool Bar',onvalue=True, offvalue=0,variable = show_top_frame, compound=tk.LEFT, command=hide_top_frame)
        
-        self.view.add_checkbutton(label=' Status Bar',onvalue=1, offvalue=False,variable = show_statusbar, compound=tk.LEFT, command=hide_statusbar)
+        self.view.add_checkbutton(label=' Status Bar',onvalue=1, offvalue=False,variable = show_bottom_frame, compound=tk.LEFT, command=hide_statusbar)
 
         # tools commands
         translate_icon = tk.PhotoImage(file='icons/translate_icon.png')
         speech_icon = tk.PhotoImage(file='icons/texttospeech_icon.png')
 
         self.tools.add_command(label='Translate (ne)', image=translate_icon, compound=tk.LEFT, command = self.open_input_dialog_event)
-        
+        self.tools.add_separator()
         self.tools.add_command(label='Text to Speech (en)', image=speech_icon, compound=tk.LEFT, command = self.texttospeech)
+
+        # code commands
+        def set_file_path(path):
+            nonlocal file_path
+            file_path = path
+
+        self.code.add_checkbutton(label=' Code Mode', compound=tk.LEFT, accelerator='Ctrl+Shift+C', command=code)
+        # self.code.add_command(label='Open', image=save_as_icon, compound=tk.LEFT, accelerator='Ctrl+Alt+S', command=open_code)
+        # self.code.add_command(label='Save Code', image=save_as_icon, compound=tk.LEFT, accelerator='Ctrl+Alt+S', command=save_file)
+        # self.code.add_command(label='Save Code As', image=save_as_icon, compound=tk.LEFT, accelerator='Ctrl+Alt+S', command=save_as_code)  
 
         # format commands
         # font menu
@@ -674,7 +1042,7 @@ class Photon(customtkinter.CTk):
 
             image_label = customtkinter.CTkLabel(self.dialog, image=my_image, text="")
             image_label.pack(pady=(100, 0))
-            image_text = customtkinter.CTkLabel(self.dialog, text="Welcome to Photon Text Editor!", font=customtkinter.CTkFont(weight="bold"))
+            image_text = customtkinter.CTkLabel(self.dialog, text="Welcome to Photon Text Editor Family!", font=customtkinter.CTkFont(weight="bold"))
             image_text.pack()
 
         self.help.add_command(label='Welcome', compound=tk.LEFT, command = welcome)
@@ -698,7 +1066,7 @@ class Photon(customtkinter.CTk):
 
             image_label = customtkinter.CTkLabel(self.dialog, image=my_image, text="")
             image_label.pack(pady=(100, 0))
-            image_text = customtkinter.CTkLabel(self.dialog, text="Photon Text Editor v1.6.0\nPowered by Python", font=customtkinter.CTkFont(weight="bold"))
+            image_text = customtkinter.CTkLabel(self.dialog, text="Photon Text Editor v1.7.0\nPowered by Python", font=customtkinter.CTkFont(weight="bold"))
             image_text.pack()
             
         self.help.add_command(label='About Photon', compound=tk.LEFT, command = aboutphoton)
@@ -724,6 +1092,7 @@ class Photon(customtkinter.CTk):
         # main menu function ends
 
         # bind shortcut keys 
+        self.search_box.bind('<Return>', search)
         self.bind("<Control-m>", hide_window)
         self.bind("<Control-n>", new_file)
         self.bind("<Control-o>", open_file)
@@ -731,6 +1100,8 @@ class Photon(customtkinter.CTk):
         self.bind("<Control-Alt-s>", save_as)
         self.bind("<Control-q>", exit_func)
         self.bind("<Control-f>", find_func)
+        self.bind("<Control-c>", copy_text)
+        self.bind("<Control-x>", cut_text)
 
     def open_input_dialog_event(self):
         trans_catch = self.text_box.get(1.0, tk.END)
@@ -781,159 +1152,3 @@ class Photon(customtkinter.CTk):
 if __name__ == "__main__":
     app = Photon()
     app.mainloop()
-
-# class App(customtkinter.CTk):
-#     def __init__(self):
-#         super().__init__()
-
-#         # configure window
-#         self.title("Photon Text Editor")
-#         self.geometry(f"{1920}x{1080}")
-#         self.wm_iconbitmap('photon.ico')
-
-#         # configure grid layout (4x4)
-#         self.grid_columnconfigure(1, weight=1)
-#         self.grid_columnconfigure((2, 3), weight=0)
-#         self.grid_rowconfigure((0, 1, 2), weight=1)
-
-#         # create sidebar frame with widgets
-#         self.sidebar_frame = customtkinter.CTkFrame(self, width=140, corner_radius=0)
-#         self.sidebar_frame.grid(row=0, column=0, rowspan=4, sticky="nsew")
-#         self.sidebar_frame.grid_rowconfigure(4, weight=1)
-#         self.logo_label = customtkinter.CTkLabel(self.sidebar_frame, text="Photon Text Editor", font=customtkinter.CTkFont(size=15, weight="bold"))
-#         self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
-#         self.sidebar_button_1 = customtkinter.CTkButton(self.sidebar_frame, command=self.sidebar_button_event)
-#         self.sidebar_button_1.grid(row=1, column=0, padx=20, pady=10)
-#         self.sidebar_button_2 = customtkinter.CTkButton(self.sidebar_frame, command=self.sidebar_button_event)
-#         self.sidebar_button_2.grid(row=2, column=0, padx=20, pady=10)
-#         self.sidebar_button_3 = customtkinter.CTkButton(self.sidebar_frame, command=self.sidebar_button_event)
-#         self.sidebar_button_3.grid(row=3, column=0, padx=20, pady=10)
-#         self.appearance_mode_label = customtkinter.CTkLabel(self.sidebar_frame, text="Appearance Mode:", anchor="w")
-#         self.appearance_mode_label.grid(row=5, column=0, padx=20, pady=(10, 0))
-#         self.appearance_mode_optionemenu = customtkinter.CTkOptionMenu(self.sidebar_frame, values=["Light", "Dark", "System"],command=self.change_appearance_mode_event)
-#         self.appearance_mode_optionemenu.grid(row=6, column=0, padx=20, pady=(10, 10))
-#         self.scaling_label = customtkinter.CTkLabel(self.sidebar_frame, text="UI Scaling:", anchor="w")
-#         self.scaling_label.grid(row=7, column=0, padx=20, pady=(10, 0))
-#         self.scaling_optionemenu = customtkinter.CTkOptionMenu(self.sidebar_frame, values=["80%", "90%", "100%", "110%", "120%"],
-#                                                                command=self.change_scaling_event)
-#         self.scaling_optionemenu.grid(row=8, column=0, padx=20, pady=(10, 20))
-
-#         # create main entry and button
-#         self.entry = customtkinter.CTkEntry(self, placeholder_text="CTkEntry")
-#         self.entry.grid(row=3, column=1, columnspan=2, padx=(20, 0), pady=(20, 20), sticky="nsew")
-
-#         self.main_button_1 = customtkinter.CTkButton(master=self, fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"))
-#         self.main_button_1.grid(row=3, column=3, padx=(20, 20), pady=(20, 20), sticky="nsew")
-
-#         # create textbox
-#         self.textbox = customtkinter.CTkTextbox(self, width=250)
-#         self.textbox.grid(row=0, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
-
-#         # create tabview
-#         self.tabview = customtkinter.CTkTabview(self, width=250)
-#         self.tabview.grid(row=0, column=2, padx=(20, 0), pady=(20, 0), sticky="nsew")
-#         self.tabview.add("CTkTabview")
-#         self.tabview.add("Tab 2")
-#         self.tabview.add("Tab 3")
-#         self.tabview.tab("CTkTabview").grid_columnconfigure(0, weight=1)  # configure grid of individual tabs
-#         self.tabview.tab("Tab 2").grid_columnconfigure(0, weight=1)
-
-#         self.optionmenu_1 = customtkinter.CTkOptionMenu(self.tabview.tab("CTkTabview"), dynamic_resizing=False, values=["Value 1", "Value 2", "Value Long Long Long"])
-#         self.optionmenu_1.grid(row=0, column=0, padx=20, pady=(20, 10))
-#         self.combobox_1 = customtkinter.CTkComboBox(self.tabview.tab("CTkTabview"),
-#                                                     values=["Value 1", "Value 2", "Value Long....."])
-#         self.combobox_1.grid(row=1, column=0, padx=20, pady=(10, 10))
-       
-#         self.string_input_button = customtkinter.CTkButton(self.tabview.tab("CTkTabview"), text="Open CTkInputDialog",command=self.open_input_dialog_event)
-#         self.string_input_button.grid(row=2, column=0, padx=20, pady=(10, 10))
-#         self.label_tab_2 = customtkinter.CTkLabel(self.tabview.tab("Tab 2"), text="CTkLabel on Tab 2")
-#         self.label_tab_2.grid(row=0, column=0, padx=20, pady=20)
-
-#         # create radiobutton frame
-#         self.radiobutton_frame = customtkinter.CTkFrame(self)
-#         self.radiobutton_frame.grid(row=0, column=3, padx=(20, 20), pady=(20, 0), sticky="nsew")
-#         self.radio_var = tkinter.IntVar(value=0)
-#         self.label_radio_group = customtkinter.CTkLabel(master=self.radiobutton_frame, text="CTkRadioButton Group:")
-#         self.label_radio_group.grid(row=0, column=2, columnspan=1, padx=10, pady=10, sticky="")
-#         self.radio_button_1 = customtkinter.CTkRadioButton(master=self.radiobutton_frame, variable=self.radio_var, value=0)
-#         self.radio_button_1.grid(row=1, column=2, pady=10, padx=20, sticky="n")
-#         self.radio_button_2 = customtkinter.CTkRadioButton(master=self.radiobutton_frame, variable=self.radio_var, value=1)
-#         self.radio_button_2.grid(row=2, column=2, pady=10, padx=20, sticky="n")
-#         self.radio_button_3 = customtkinter.CTkRadioButton(master=self.radiobutton_frame, variable=self.radio_var, value=2)
-#         self.radio_button_3.grid(row=3, column=2, pady=10, padx=20, sticky="n")
-
-#         # create slider and progressbar frame
-#         self.slider_progressbar_frame = customtkinter.CTkFrame(self, fg_color="transparent")
-#         self.slider_progressbar_frame.grid(row=1, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
-#         self.slider_progressbar_frame.grid_columnconfigure(0, weight=1)
-#         self.slider_progressbar_frame.grid_rowconfigure(4, weight=1)
-#         self.seg_button_1 = customtkinter.CTkSegmentedButton(self.slider_progressbar_frame)
-#         self.seg_button_1.grid(row=0, column=0, padx=(20, 10), pady=(10, 10), sticky="ew")
-#         self.progressbar_1 = customtkinter.CTkProgressBar(self.slider_progressbar_frame)
-#         self.progressbar_1.grid(row=1, column=0, padx=(20, 10), pady=(10, 10), sticky="ew")
-#         self.progressbar_2 = customtkinter.CTkProgressBar(self.slider_progressbar_frame)
-#         self.progressbar_2.grid(row=2, column=0, padx=(20, 10), pady=(10, 10), sticky="ew")
-#         self.slider_1 = customtkinter.CTkSlider(self.slider_progressbar_frame, from_=0, to=1, number_of_steps=4)
-#         self.slider_1.grid(row=3, column=0, padx=(20, 10), pady=(10, 10), sticky="ew")
-#         self.slider_2 = customtkinter.CTkSlider(self.slider_progressbar_frame, orientation="vertical")
-#         self.slider_2.grid(row=0, column=1, rowspan=5, padx=(10, 10), pady=(10, 10), sticky="ns")
-#         self.progressbar_3 = customtkinter.CTkProgressBar(self.slider_progressbar_frame, orientation="vertical")
-#         self.progressbar_3.grid(row=0, column=2, rowspan=5, padx=(10, 20), pady=(10, 10), sticky="ns")
-
-#         # create scrollable frame
-#         self.scrollable_frame = customtkinter.CTkScrollableFrame(self, label_text="CTkScrollableFrame")
-#         self.scrollable_frame.grid(row=1, column=2, padx=(20, 0), pady=(20, 0), sticky="nsew")
-#         self.scrollable_frame.grid_columnconfigure(0, weight=1)
-#         self.scrollable_frame_switches = []
-#         for i in range(100):
-#             switch = customtkinter.CTkSwitch(master=self.scrollable_frame, text=f"CTkSwitch {i}")
-#             switch.grid(row=i, column=0, padx=10, pady=(0, 20))
-#             self.scrollable_frame_switches.append(switch)
-
-#         # create checkbox and switch frame
-#         self.checkbox_slider_frame = customtkinter.CTkFrame(self)
-#         self.checkbox_slider_frame.grid(row=1, column=3, padx=(20, 20), pady=(20, 0), sticky="nsew")
-#         self.checkbox_1 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame)
-#         self.checkbox_1.grid(row=1, column=0, pady=(20, 0), padx=20, sticky="n")
-#         self.checkbox_2 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame)
-#         self.checkbox_2.grid(row=2, column=0, pady=(20, 0), padx=20, sticky="n")
-#         self.checkbox_3 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame)
-#         self.checkbox_3.grid(row=3, column=0, pady=20, padx=20, sticky="n")
-
-#         # set default values
-#         self.sidebar_button_3.configure(state="disabled", text="Disabled CTkButton")
-#         self.checkbox_3.configure(state="disabled")
-#         self.checkbox_1.select()
-#         self.scrollable_frame_switches[0].select()
-#         self.scrollable_frame_switches[4].select()
-#         self.radio_button_3.configure(state="disabled")
-#         self.appearance_mode_optionemenu.set("Dark")
-#         self.scaling_optionemenu.set("100%")
-#         self.optionmenu_1.set("CTkOptionmenu")
-#         self.combobox_1.set("CTkComboBox")
-#         self.slider_1.configure(command=self.progressbar_2.set)
-#         self.slider_2.configure(command=self.progressbar_3.set)
-#         self.progressbar_1.configure(mode="indeterminnate")
-#         self.progressbar_1.start()
-#         self.textbox.insert("0.0", "CTkTextbox\n\n" + "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\n\n" * 20)
-#         self.seg_button_1.configure(values=["CTkSegmentedButton", "Value 2", "Value 3"])
-#         self.seg_button_1.set("Value 2")
-
-#     def open_input_dialog_event(self):
-#         dialog = customtkinter.CTkInputDialog(text="Type in a number:", title="CTkInputDialog")
-#         print("CTkInputDialog:", dialog.get_input())
-
-#     def change_appearance_mode_event(self, new_appearance_mode: str):
-#         customtkinter.set_appearance_mode(new_appearance_mode)
-
-#     def change_scaling_event(self, new_scaling: str):
-#         new_scaling_float = int(new_scaling.replace("%", "")) / 100
-#         customtkinter.set_widget_scaling(new_scaling_float)
-
-#     def sidebar_button_event(self):
-#         print("sidebar_button click")
-
-
-# if __name__ == "__main__":
-#     app = App()
-#     app.mainloop()
